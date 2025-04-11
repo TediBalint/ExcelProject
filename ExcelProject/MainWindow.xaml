@@ -49,7 +49,7 @@
                             <ColumnDefinition Width="2*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Button Content="Mentés" Grid.Column="0" x:Name="gb"/>
+                        <Button Content="Mentés" Grid.Column="0" x:Name="gb" Click="gb_Click"/>
                         <ComboBox  Grid.Column="1" Margin="10 0 0 0" x:Name="saveformat"/>
                     </Grid>
                 </Border>
@@ -64,7 +64,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <ComboBox x:Name="fontfamily" Grid.Column="0"  Margin="0 0 10 0"/>
+                        <ComboBox x:Name="fontfamily" Grid.Column="0" ItemsSource="{Binding fontFamilies}" SelectedItem="{Binding SelectedCellProperties.Font_Family}"  Margin="0 0 10 0"/>
                         <ComboBox x:Name="fontsize" Grid.Column="1"  Margin="0 0 10 0"/>
                         <Button x:Name="size_plus" Grid.Column="2" Content="A+"  Margin="0 5 3 5"/>
                         <Button x:Name="size_minus" Grid.Column="3" Content="A-" Margin="0 5 3 5"/>
@@ -79,9 +79,9 @@
                             <ColumnDefinition Width="0.8*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" x:Name="fontweight" Margin="0 0 5 0" Content="F" FontWeight="Bold"/>
-                        <Button Grid.Column="1" x:Name="fontstyle" Margin="5 0" Content="D" FontStyle="Italic"/>
-                        <ComboBox Grid.Column="2" Grid.ColumnSpan="2" x:Name="fontdecoration" Margin="5 0"/>
+                        <Button Grid.Column="0" x:Name="fontweight" Margin="0 0 5 0" Content="F" Background="{Binding BoldButtonBackground, Mode=OneWay}" FontWeight="Bold" Click="fontweight_Click"/>
+                        <Button Grid.Column="1" x:Name="fontstyle" Margin="5 0" Content="D" FontStyle="Italic" />
+                        <ComboBox Grid.Column="2" Grid.ColumnSpan="2" x:Name="fontdecoration" Margin="5 0" ItemsSource="{Binding textDecorations}" DisplayMemberPath="TextDecorations"/>
                         <ComboBox Grid.Column="4"  x:Name="fgcolor" Margin="5 0"/>
                     </Grid>
                 </Border>
@@ -161,7 +161,7 @@
                 </Border>
 
                 <ComboBox x:Name="functions" Grid.Column="4" Grid.Row="0" Margin="11"/>
-                <Button x:Name="tablestripped" Grid.Column="4" Grid.Row="1" Margin="10" Content="Table Striped"/>
+                <Button x:Name="tablestriped" Grid.Column="4" Grid.Row="1" Margin="10" Content="Table Striped"/>
                 <Label Grid.Column="4" Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Center" Content="Függvények" Margin="0 0 0 5"/>
             </Grid>
 
@@ -214,7 +214,7 @@
             </Border>
             <!--függvényillesztő-->
         </StackPanel>
-        <Grid Grid.Row="2">
+        <Grid x:Name="table_GRD" Grid.Row="2" Margin="0 10">
             <!--exceltable-->
         </Grid>
         <StackPanel Grid.Row="3" Orientation="Horizontal">
