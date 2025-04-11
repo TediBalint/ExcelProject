@@ -20,8 +20,7 @@ namespace ExcelProject
         {
             InitializeComponent();
         }
-        private void next_Click(object sender, RoutedEventArgs e)
-        {
+        private void insertFuncBtn_Click(object sender, RoutedEventArgs e) {
             FunctionSelector fs = new FunctionSelector();
             fs.ShowDialog();
         }

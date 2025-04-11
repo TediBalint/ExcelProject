@@ -10,5 +10,6 @@ namespace ExcelProject
     {
         public string Name { get; set; }
         public string[] Values { get; set; }
+        public string Description { get; set; }
     }
 }

@@ -194,7 +194,7 @@
                             </Style>
                         </Button.Style>
                     </Button>
-                    <Button Content="fx">
+                    <Button Content="fx" x:Name="insertFuncBtn" Click="insertFuncBtn_Click">
                         <Button.Style>
                             <Style TargetType="Button"  BasedOn="{StaticResource FN_BTN}">
                                 <Style.Triggers>

@@ -1,10 +1,62 @@
 [
   {
-    "Name": "Sum",
-    "Values": [ "*number" ]
+    "Name": "SZUM",
+    "Values": [ "*number" ],
+    "Description": "Adott cellatartomány értékeit adja össze"
   },
   {
-    "Name": "Avg",
-    "Values": [ "*number" ]
+    "Name": "ÁTLAG",
+    "Values": [ "*number" ],
+    "Description": "Adott cellatartomány értékeit átlagolja"
+  },
+  {
+    "Name": "SZUMHA",
+    "Values": [ "*number", "territory", "criteria" ],
+    "Description": "Adott cellatartomány értékeit adja össze egy krutérium alapján"
+  },
+  {
+    "Name": "ÁTLAGHA",
+    "Values": [ "*number", "territory", "criteria" ],
+    "Description": "Adott cellatartomány értékeit átlagolja egy krutérium alapján"
+  },
+  {
+    "Name": "DARAB",
+    "Values": [ "territory" ],
+    "Description": "Megszámolja hány számot tartalmazó cella van az adott tartományban"
+  },
+  {
+    "Name": "DARABHA",
+    "Values": [ "territory", "criteria" ],
+    "Description": "Megszámolja hány, a feltételnek megfelelő cella van az adott tartományban"
+  },
+  {
+    "Name": "MAX",
+    "Values": [ "*number" ],
+    "Description": "Visszaadja a legnagyobb számot egy adott cellatartományban"
+  },
+  {
+    "Name": "MIN",
+    "Values": [ "*number" ],
+    "Description": "Visszaadja a legkisebb számot egy adott cellatartományban"
+  },
+  {
+    "Name": "INDEX",
+    "Values": [ "idx", "territory" ],
+    "Description": "Megmutatja, milyen érték áll egy cellatartomány adott helyén"
+  },
+  {
+    "Name": "HOL.VAN",
+    "Values": [ "value", "territory" ],
+    "Description": "Adott érték helyét adja vissza egy adott cellatartományban"
+  },
+  {
+    "Name": "BAL",
+    "Values": [ "text", "n" ],
+    "Description": "Adott számú karaktert ad vissza a szöveg bal oldaláról"
+  },
+  {
+    "Name": "JOBB",
+    "Values": [ "text", "n" ],
+    "Description": "Adott számú karaktert ad vissza a szöveg jobb oldaláról"
   }
 ]
