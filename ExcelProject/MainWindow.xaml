@@ -5,42 +5,169 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ExcelProject"
         mc:Ignorable="d"
-        Title="MainWindow" Height="1080" Width="1920" WindowState="Maximized">
-    <Grid>
-        
+        Title="MainWindow" Height="1080" Width="1920" WindowState="Maximized"
+        FontSize="18">
+    <Grid Margin="0 5">
+        <Grid.Resources>
+            <Style TargetType="{x:Type Control}">
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            </Style>
+            <Style TargetType="Border" x:Key="side_BRD">
+                <Setter Property="BorderBrush" Value="Gray"/>
+                <Setter Property="BorderThickness" Value="0 0 1 0"/>
+            </Style>
+        </Grid.Resources>
+
         <Grid.RowDefinitions>
             <RowDefinition Height="3*"/>
             <RowDefinition Height="0.65*"/>
             <RowDefinition Height="10*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
-                <ComboBox x:Name="fontfamily"/>
-                <ComboBox x:Name="fontsize"/>
-                <Button x:Name="size_plus"/>
-                <Button x:Name="size_minus"/>
-            </StackPanel>
-            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
-                <Button x:Name="fontweight"/>
-                <Button x:Name="fontstyle"/>
-                <Button x:Name="fontdecoration"/>
-            </StackPanel>
-        </Grid>
+        <Border Margin="0 0 0 20" Padding="0 0 0 5" BorderBrush="Gray" BorderThickness="0 1 0 1" Grid.Row="0">
+            <!--top menu-->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Border Style="{StaticResource side_BRD}" Grid.Row="0" Grid.Column="0">
+                    <Button Margin="10" Content="Megnyitás" x:Name="open"/>
+                </Border>
+                <Border Style="{StaticResource side_BRD}" Grid.Row="1" Grid.Column="0">
+                    <Grid Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Content="Mentés" Grid.Column="0" x:Name="gb"/>
+                        <ComboBox  Grid.Column="1" Margin="10 0 0 0" x:Name="saveformat"/>
+                    </Grid>
+                </Border>
+                <Border Style="{StaticResource side_BRD}" Grid.Row="2" Grid.Column="0">
+                    <Button Margin="10" Content="Formátummásoló" x:Name="formatcopy"/>
+                </Border>
+                <Border Style="{StaticResource side_BRD}" Grid.Row="0" Grid.Column="1">
+                    <Grid Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <ComboBox x:Name="fontfamily" Grid.Column="0"  Margin="0 0 10 0"/>
+                        <ComboBox x:Name="fontsize" Grid.Column="1"  Margin="0 0 10 0"/>
+                        <Button x:Name="size_plus" Grid.Column="2" Content="A+"  Margin="0 5 3 5"/>
+                        <Button x:Name="size_minus" Grid.Column="3" Content="A-" Margin="0 5 3 5"/>
+                    </Grid>
+                </Border>
+                <Border Style="{StaticResource side_BRD}" Grid.Row="1" Grid.Column="1">
+                    <Grid Margin="10" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="0.8*"/>
+                            <ColumnDefinition Width="0.8*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0" x:Name="fontweight" Margin="0 0 5 0" Content="F" FontWeight="Bold"/>
+                        <Button Grid.Column="1" x:Name="fontstyle" Margin="5 0" Content="D" FontStyle="Italic"/>
+                        <ComboBox Grid.Column="2" Grid.ColumnSpan="2" x:Name="fontdecoration" Margin="5 0"/>
+                        <ComboBox Grid.Column="4"  x:Name="fgcolor" Margin="5 0"/>
+                    </Grid>
+                </Border>
+                <Border Style="{StaticResource side_BRD}" Grid.Row="2" Grid.Column="1" Grid.RowSpan="2">
+                    <Label Content="Betűtípus" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0 0 0 5"/>
+                </Border>
+                <Border Style="{StaticResource side_BRD}" Grid.Row="0" Grid.Column="2">
+                    <Grid Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0" x:Name="topAlign" Margin="0 0 10 0">
+                            <Image Source="/Images/align-center.png" Width="100" Height="30" Margin="0 0 0 15"/>
+                        </Button>
+                        <Button Grid.Column="1" x:Name="midAlign" Margin="0 0 10 0">
+                            <Image Source="/Images/align-center.png" Width="100" Height="30" />
+                        </Button>
+                        <Button Grid.Column="2" x:Name="bottomAlign">
+                            <Image Source="/Images/align-center.png" Width="100" Height="30" Margin="0 15 0 0"/>
+                        </Button>
+                    </Grid>
+                </Border>
+                <Border Style="{StaticResource side_BRD}" Grid.Row="1" Grid.Column="2">
+                    <Grid Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0" x:Name="leftAlign" Margin="0 0 10 0">
+                            <Image Source="/Images/align-left.png" Width="100" Height="30" />
+                         </Button>
+                        <Button Grid.Column="1" x:Name="centerAlign" Margin="0 0 10 0">
+                            <Image Source="/Images/align-center.png" Width="100" Height="30"/>
+                        </Button>
+                        <Button Grid.Column="2" x:Name="rightAlign">
+                            <Image Source="/Images/align-right.png" Width="100" Height="30"/>
+                        </Button>
+                    </Grid>
+                </Border>
+                <Border Style="{StaticResource side_BRD}" Grid.Row="2" Grid.Column="2" Grid.RowSpan="2">
+                    <Label Content="Igazítás" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0 0 0 5"/>
+                </Border>
+
+                <Border Style="{StaticResource side_BRD}" BorderThickness="0 0 1 1" Grid.Row="0" Grid.Column="3" Grid.RowSpan="2">
+                    <Grid>
+                        <Grid.Resources>
+                            <Style TargetType="Button">
+                                <Setter Property="FontSize" Value="20"/>
+                            </Style>
+                        </Grid.Resources>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                            
+                        <Button Grid.Row="0" Grid.Column="0" x:Name="normalformat" Content="Normál" Margin="10" Background="White"/>
+                        <Button Grid.Row="0" Grid.Column="1" x:Name="goodformat" Content="Jó" Margin="10" Background="LightGreen" Foreground="Green"/>
+                        <Button Grid.Row="0" Grid.Column="2" x:Name="badformat" Content="Rossz" Margin="10" Background="Pink" Foreground="Red"/>
+                        <Button Grid.Row="0" Grid.Column="3" x:Name="neutralformat" Content="Semleges" Margin="10" Background="Gold" Foreground="Brown"/>
+                        <Button Grid.Row="1" Grid.Column="0" x:Name="input" Content="Bevitel" Margin="10" Background="Orange"/>
+                        <Button Grid.Row="1" Grid.Column="1" x:Name="check" Content="Ellenőrzőcella" Margin="10" Background="DarkGray" Foreground="White"/>
+                        <Button Grid.Row="1" Grid.Column="2" x:Name="warning" Content="Figyelmeztet" Margin="10" Background="White" Foreground="Red"/>
+                        <Button Grid.Row="1" Grid.Column="3" x:Name="link" Content="Hivatkozás" Margin="10" Background="White" Foreground="SandyBrown"/>
+                    </Grid>
+                </Border>
+                <Border Style="{StaticResource side_BRD}" Grid.Row="2" Grid.Column="3" Grid.RowSpan="2">
+                    <Label Content="Stílusok" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0 0 0 5"/>
+                </Border>
+
+                <ComboBox x:Name="functions" Grid.Column="4" Grid.Row="0" Margin="11"/>
+                <Button x:Name="tablestripped" Grid.Column="4" Grid.Row="1" Margin="10" Content="Table Striped"/>
+                <Label Grid.Column="4" Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Center" Content="Függvények" Margin="0 0 0 5"/>
+            </Grid>
+
+            <!--<Grid>-->
+                
+        </Border>
         <StackPanel Grid.Row="1" Orientation="Horizontal">
             <Border Margin="20 0 10 0" BorderBrush="Gray" BorderThickness="1">
                 <StackPanel Orientation="Horizontal">
