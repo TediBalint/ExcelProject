@@ -1,0 +1,10 @@
+[
+  {
+    "Name": "Sum",
+    "Values": [ "*number" ]
+  },
+  {
+    "Name": "Avg",
+    "Values": [ "*number" ]
+  }
+]

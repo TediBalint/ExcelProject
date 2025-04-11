@@ -1,0 +1,62 @@
+﻿<Window x:Class="ExcelProject.FunctionSelector"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ExcelProject"
+        mc:Ignorable="d"
+        Title="Függvény beszúrása" Height="350" Width="400">
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="1.9*"/>
+            <RowDefinition/>
+            <RowDefinition Height=".5*"/>
+        </Grid.RowDefinitions>
+        <GroupBox Header="Függvény keresése:">
+            <Grid HorizontalAlignment="Stretch" Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBox x:Name="nameSearch" Height="30" VerticalAlignment="Top"/>
+                <Button Content="Keresés" HorizontalAlignment="Right" Height="25" Width="80" VerticalAlignment="Top" Grid.Column="1"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="A függvény neve:" Grid.Row="1">
+            <Grid HorizontalAlignment="Stretch" Margin="5">
+                <ListBox x:Name="functionsList">
+
+                </ListBox>
+            </Grid>
+        </GroupBox>
+        <StackPanel Grid.Row="2">
+            <Label Content="TITLE" FontWeight="Bold" Height="25"/>
+            <Label Content="description" VerticalContentAlignment="Top" VerticalAlignment="Stretch"/>
+        </StackPanel>
+        <!--<TextBlock Grid.Row="3">           
+            <Hyperlink NavigateUri="http://www.google.com" RequestNavigate="Hyperlink_RequestNavigate">
+                Click here
+            </Hyperlink>
+        </TextBlock>-->
+        <Border BorderBrush="Gray" BorderThickness="0 .5 0 0" Grid.Row="3" >
+            <Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/> <!--súgónak ha lesz-->
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right">
+                    <StackPanel.Resources>
+                        <Style TargetType="Button">
+                            <Setter Property="Width" Value="80"/>
+                            <Setter Property="Height" Value="25"/>
+                            <Setter Property="Margin" Value="10 5 5 0"/>
+                        </Style>
+                    </StackPanel.Resources>
+                    <Button Content="OK"/>
+                    <Button Content="Mégse" x:Name="cancel" Click="cancel_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
