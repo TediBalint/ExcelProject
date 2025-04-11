@@ -32,4 +32,10 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="paramNames.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

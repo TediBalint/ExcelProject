@@ -160,5 +160,11 @@ namespace ExcelProject
             else SelectedCellProperties.Font_Weight = FontWeights.Bold;
             OnPropertyChanged(nameof(BoldButtonBackground));
 		}
+
+		private void insertFuncBtn_Click(object sender, RoutedEventArgs e)
+		{
+            Window functionselectorWindw = new FunctionSelector();
+            functionselectorWindw.Show();
+		}
 	}
 }

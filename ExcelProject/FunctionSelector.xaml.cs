@@ -22,6 +22,8 @@ namespace ExcelProject
         public FunctionSelector()
         {
             InitializeComponent();
+            Function f = new("SZUMHA", "1;2;3;4");
+            string s = f.Invoke();
         }
         private void cancel_Click(object sender, RoutedEventArgs e)
         {
