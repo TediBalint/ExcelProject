@@ -31,6 +31,7 @@ namespace ExcelProject
             get {return selectedCellProperties;}
             set { selectedCellProperties = value; OnPropertyChanged(nameof(SelectedCellProperties)); }
         }
+        public ObservableCollection<KeyValuePair<string, Brush>> Brushes { get; set; } = Statics.foregroundBrushes;
 		public MainWindow()
         {
             InitializeComponent();
@@ -205,19 +206,14 @@ namespace ExcelProject
 		{
             if (sender.GetType() != typeof(Button) || SelectedCellProperties == null) return;
 			Button btn = (Button)sender;
-			if (Enum.TryParse(btn.Tag.ToString(), out VerticalAlignment alignment))
-			{
-				SelectedCellProperties.Vertical_Content_Align = alignment;
-			}
+			if (Enum.TryParse(btn.Tag.ToString(), out VerticalAlignment alignment)) SelectedCellProperties.Vertical_Content_Align = alignment;
 		}
 		private void HorizontalContentAlign_BTN_Click(object sender, RoutedEventArgs e)
 		{
 			if (sender.GetType() != typeof(Button) || SelectedCellProperties == null) return;
 			Button btn = (Button)sender;
-			if (Enum.TryParse(btn.Tag.ToString(), out HorizontalAlignment alignment))
-			{
-				SelectedCellProperties.Horizontal_Content_Align = alignment;
-			}
+			if (Enum.TryParse(btn.Tag.ToString(), out HorizontalAlignment alignment)) SelectedCellProperties.Horizontal_Content_Align = alignment;
+			
 		}
 	}
 }

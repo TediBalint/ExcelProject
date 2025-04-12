@@ -35,12 +35,19 @@ namespace ExcelProject
 		public const string FONT_FILE_PATH = "Data/fonts.txt";
 		public const string DEFAULT_FONT_SIZE_FILE_PATH = "Data/default_font_size.txt";
 
-		public static ObservableCollection<KeyValuePair<string, TextDecorationCollection?>> textDecorations { get; set; } = new ObservableCollection<KeyValuePair<string, TextDecorationCollection?>>()
+		public static ObservableCollection<KeyValuePair<string, TextDecorationCollection?>> textDecorations = new ObservableCollection<KeyValuePair<string, TextDecorationCollection?>>()
 		{	new KeyValuePair<string, TextDecorationCollection?>("Nincs", null),
 			new KeyValuePair<string, TextDecorationCollection?>("Normál", TextDecorations.Underline),
 			new KeyValuePair<string, TextDecorationCollection?>("Vékony", TextDecorations.Baseline),
 			new KeyValuePair<string, TextDecorationCollection?>("Fölé", TextDecorations.OverLine),
 			new KeyValuePair<string, TextDecorationCollection?>("Áthúzás", TextDecorations.Strikethrough)
+		};
+		public static ObservableCollection<KeyValuePair<string, Brush>> foregroundBrushes = new ObservableCollection<KeyValuePair<string, Brush>>()
+		{	
+			new KeyValuePair<string, Brush>("Fekete" ,Brushes.Black),
+			new KeyValuePair<string, Brush>("Fehér" ,Brushes.White),
+			new KeyValuePair<string, Brush>("Piros" ,Brushes.Red),
+			new KeyValuePair<string, Brush>("Kék" ,Brushes.Blue)
 		};
 	}
 

@@ -30,7 +30,7 @@
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="1.5*"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="*"/>
@@ -73,13 +73,13 @@
                 <Border Style="{StaticResource side_BRD}" Grid.Row="1" Grid.Column="1">
                     <Grid Margin="10" >
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="0.7*"/>
+                            <ColumnDefinition Width="0.7*"/>
+                            <ColumnDefinition Width="0.9*"/>
+                            <ColumnDefinition Width="0.9*"/>
+                            <ColumnDefinition Width="1.1*"/>
                         </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" x:Name="fontweight" Margin="0 0 5 0" Content="F" FontWeight="Bold" Click="fontweight_Click">
+                        <Button Grid.Column="0" x:Name="fontweight" Margin="0 0 7 0" Content="F" FontWeight="Bold" Click="fontweight_Click">
                             <Button.Style>
                                 <Style TargetType="Button">
                                     <Setter Property="Background" Value="LightGray"/>
@@ -91,7 +91,7 @@
                                 </Style>
                             </Button.Style>
                         </Button>
-                        <Button Grid.Column="1" x:Name="fontstyle" Margin="5 0" Content="D" FontStyle="Italic" Click="fontstyle_Click">
+                        <Button Grid.Column="1" x:Name="fontstyle" Margin="0 0 7 0" Content="D" FontStyle="Italic" Click="fontstyle_Click">
                             <Button.Style>
                                 <Style TargetType="Button">
                                     <Setter Property="Background" Value="LightGray"/>
@@ -103,8 +103,8 @@
                                 </Style>
                             </Button.Style>
                         </Button>
-                        <ComboBox Grid.Column="2" Grid.ColumnSpan="2" x:Name="fontdecoration" Margin="5 0" ItemsSource="{Binding textDecorations}" DisplayMemberPath="Key" SelectedValuePath="Value" SelectedValue="{Binding SelectedCellProperties.Text_Decoration}" VerticalContentAlignment="Center"/>
-                        <ComboBox Grid.Column="4"  x:Name="fgcolor" Margin="5 0" VerticalContentAlignment="Center"/>
+                        <ComboBox Grid.Column="2" Grid.ColumnSpan="2" x:Name="fontdecoration" Margin="5 0"  VerticalContentAlignment="Center" ItemsSource="{Binding textDecorations}" DisplayMemberPath="Key" SelectedValuePath="Value" SelectedValue="{Binding SelectedCellProperties.Text_Decoration}"/>
+                        <ComboBox Grid.Column="4"  x:Name="fgcolor" Margin="5 0" VerticalContentAlignment="Center" ItemsSource="{Binding Brushes}" DisplayMemberPath="Key" SelectedValuePath="Value" SelectedValue="{Binding SelectedCellProperties.Foreground_Color}"/>
                     </Grid>
                 </Border>
                 <Border Style="{StaticResource side_BRD}" Grid.Row="2" Grid.Column="1" Grid.RowSpan="2">
