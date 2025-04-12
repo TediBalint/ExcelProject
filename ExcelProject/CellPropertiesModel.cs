@@ -45,8 +45,8 @@ namespace ExcelProject
             get { return font_Style; }
             set { font_Style = value; OnPropertyChanged(nameof(Font_Style)); }
         }
-        private TextDecorationCollection text_Decoration;
-        public TextDecorationCollection Text_Decoration 
+        private TextDecorationCollection? text_Decoration;
+        public TextDecorationCollection? Text_Decoration 
         {
             get { return text_Decoration; }
             set { text_Decoration = value; OnPropertyChanged(nameof(Text_Decoration)); } 
@@ -63,10 +63,18 @@ namespace ExcelProject
 			get { return background_Color; }
 			set { background_Color = value; OnPropertyChanged(nameof(Background_Color)); }
 		}
-        public VerticalAlignment Vertical_Content_Align { get; set; }
-        public HorizontalAlignment Horizontal_Content_Align { get; set; }
-           
-
+        public VerticalAlignment vertical_Content_Align;
+        public VerticalAlignment Vertical_Content_Align 
+        {
+            get { return vertical_Content_Align; } 
+            set { vertical_Content_Align = value; OnPropertyChanged(nameof(Vertical_Content_Align)); }
+        }
+        private HorizontalAlignment horizontal_Content_Align;
+        public HorizontalAlignment Horizontal_Content_Align 
+        {
+            get { return horizontal_Content_Align; }
+            set { horizontal_Content_Align = value; OnPropertyChanged(nameof(Horizontal_Content_Align)); } 
+        }
         public CellPropertiesModel(bool setValues)
         {
             if (setValues)
@@ -76,9 +84,9 @@ namespace ExcelProject
                 Width = new GridLength(1, GridUnitType.Star);
                 Font_Family = new FontFamily("Arial");
                 Height = new GridLength(1, GridUnitType.Star);
-                Font_Weight = FontWeights.Bold;
-                Font_Style = FontStyles.Italic;
-                Text_Decoration = TextDecorations.OverLine;
+                Font_Weight = FontWeights.Normal;
+                Font_Style = FontStyles.Normal;
+                Text_Decoration = null;
                 Foreground_Color = Brushes.Black;
                 Background_Color = Brushes.White;
                 Vertical_Content_Align = VerticalAlignment.Center;

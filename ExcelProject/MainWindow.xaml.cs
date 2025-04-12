@@ -21,32 +21,15 @@ namespace ExcelProject
 	public partial class MainWindow : Window, INotifyPropertyChanged
     {
 		public event PropertyChangedEventHandler? PropertyChanged;
-
-        public Brush BoldButtonBackground
-        {
-            get
-            {
-                if(SelectedCellProperties != null) return Statics.WeightToBrush[SelectedCellProperties.Font_Weight];
-                else return Brushes.LightGray;
-			}
-        }
-        public Brush ItalicButtonBackground
-        {
-            get
-            {
-                if(SelectedCellProperties != null) return Statics.StyleToBrush[SelectedCellProperties.Font_Style];
-                else return Brushes.LightGray;
-			}
-        }
 		public ObservableCollection<ObservableCollection<CellPropertiesModel>> cellPropertiesModels { get; set; } = new ObservableCollection<ObservableCollection<CellPropertiesModel>>();
         public ObservableCollection<FontFamily> fontFamilies { get; set; } = new ObservableCollection<FontFamily>();
-        public ObservableCollection<KeyValuePair<string, TextDecorationCollection>> textDecorations { get; set; } = Statics.textDecorations;
+        public ObservableCollection<KeyValuePair<string, TextDecorationCollection?>> textDecorations { get; set; } = Statics.textDecorations;
         public ObservableCollection<double> fontSizes { get; set; } = new ObservableCollection<double>();
         public CellPropertiesModel? selectedCellProperties { get; set; }
         public CellPropertiesModel? SelectedCellProperties
         {   
             get {return selectedCellProperties;}
-            set { selectedCellProperties = value; OnPropertyChanged(nameof(SelectedCellProperties)); OnPropertyChanged(nameof(BoldButtonBackground)); OnPropertyChanged(nameof(ItalicButtonBackground)); }
+            set { selectedCellProperties = value; OnPropertyChanged(nameof(SelectedCellProperties)); }
         }
 		public MainWindow()
         {
@@ -181,7 +164,6 @@ namespace ExcelProject
             if(SelectedCellProperties == null) return;
             if (SelectedCellProperties.Font_Weight == FontWeights.Bold) SelectedCellProperties.Font_Weight = FontWeights.Normal;
             else SelectedCellProperties.Font_Weight = FontWeights.Bold;
-            OnPropertyChanged(nameof(BoldButtonBackground));
 		}
 
 		private void insertFuncBtn_Click(object sender, RoutedEventArgs e)
@@ -209,7 +191,6 @@ namespace ExcelProject
 			if (SelectedCellProperties == null) return;
             if (SelectedCellProperties.Font_Style == FontStyles.Normal) SelectedCellProperties.Font_Style = FontStyles.Italic;
             else SelectedCellProperties.Font_Style = FontStyles.Normal;
-			OnPropertyChanged(nameof(ItalicButtonBackground));
 		}
 
 		private void StyleBTN_Click(object sender, RoutedEventArgs e)
@@ -218,6 +199,25 @@ namespace ExcelProject
             Button btn = (Button)sender;
             SelectedCellProperties.Background_Color = btn.Background;
             SelectedCellProperties.Foreground_Color = btn.Foreground;
+		}
+
+		private void VerticalContentAlignmentBTN_Click(object sender, RoutedEventArgs e)
+		{
+            if (sender.GetType() != typeof(Button) || SelectedCellProperties == null) return;
+			Button btn = (Button)sender;
+			if (Enum.TryParse(btn.Tag.ToString(), out VerticalAlignment alignment))
+			{
+				SelectedCellProperties.Vertical_Content_Align = alignment;
+			}
+		}
+		private void HorizontalContentAlign_BTN_Click(object sender, RoutedEventArgs e)
+		{
+			if (sender.GetType() != typeof(Button) || SelectedCellProperties == null) return;
+			Button btn = (Button)sender;
+			if (Enum.TryParse(btn.Tag.ToString(), out HorizontalAlignment alignment))
+			{
+				SelectedCellProperties.Horizontal_Content_Align = alignment;
+			}
 		}
 	}
 }

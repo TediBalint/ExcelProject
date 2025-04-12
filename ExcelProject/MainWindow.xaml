@@ -64,8 +64,8 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <ComboBox x:Name="fontfamily" Grid.Column="0" ItemsSource="{Binding fontFamilies}" SelectedItem="{Binding SelectedCellProperties.Font_Family}"  Margin="0 0 10 0"/>
-                        <ComboBox x:Name="fontsize" Grid.Column="1"  Margin="0 0 10 0" ItemsSource="{Binding fontSizes}" SelectedValue="{Binding SelectedCellProperties.Font_Size}"/>
+                        <ComboBox x:Name="fontfamily" Grid.Column="0" ItemsSource="{Binding fontFamilies}" SelectedItem="{Binding SelectedCellProperties.Font_Family}" VerticalContentAlignment="Center"  Margin="0 0 10 0"/>
+                        <ComboBox x:Name="fontsize" Grid.Column="1"  Margin="0 0 10 0" ItemsSource="{Binding fontSizes}" SelectedValue="{Binding SelectedCellProperties.Font_Size}" VerticalContentAlignment="Center"/>
                         <Button x:Name="size_plus" Grid.Column="1" Content="A+"  Margin="0,5,3,5" Grid.ColumnSpan="2" HorizontalAlignment="Right" Width="35" Click="size_plus_Click"/>
                         <Button x:Name="size_minus" Grid.Column="3" Content="A-" Margin="0 5 3 5" Click="size_minus_Click"/>
                     </Grid>
@@ -79,10 +79,32 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" x:Name="fontweight" Margin="0 0 5 0" Content="F" Background="{Binding BoldButtonBackground, Mode=OneWay}" FontWeight="Bold" Click="fontweight_Click"/>
-                        <Button Grid.Column="1" x:Name="fontstyle" Margin="5 0" Content="D" FontStyle="Italic" Background="{Binding ItalicButtonBackground, Mode=OneWay}" Click="fontstyle_Click" />
-                        <ComboBox Grid.Column="2" Grid.ColumnSpan="2" x:Name="fontdecoration" Margin="5 0" ItemsSource="{Binding textDecorations}" DisplayMemberPath="Key" SelectedValuePath="Value" SelectedValue="{Binding SelectedCellProperties.Text_Decoration}"/>
-                        <ComboBox Grid.Column="4"  x:Name="fgcolor" Margin="5 0"/>
+                        <Button Grid.Column="0" x:Name="fontweight" Margin="0 0 5 0" Content="F" FontWeight="Bold" Click="fontweight_Click">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Background" Value="LightGray"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedCellProperties.Font_Weight}" Value="Bold">
+                                            <Setter Property="Background" Value="Gray"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                        <Button Grid.Column="1" x:Name="fontstyle" Margin="5 0" Content="D" FontStyle="Italic" Click="fontstyle_Click">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Background" Value="LightGray"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedCellProperties.Font_Style}" Value="Italic">
+                                            <Setter Property="Background" Value="Gray"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                        <ComboBox Grid.Column="2" Grid.ColumnSpan="2" x:Name="fontdecoration" Margin="5 0" ItemsSource="{Binding textDecorations}" DisplayMemberPath="Key" SelectedValuePath="Value" SelectedValue="{Binding SelectedCellProperties.Text_Decoration}" VerticalContentAlignment="Center"/>
+                        <ComboBox Grid.Column="4"  x:Name="fgcolor" Margin="5 0" VerticalContentAlignment="Center"/>
                     </Grid>
                 </Border>
                 <Border Style="{StaticResource side_BRD}" Grid.Row="2" Grid.Column="1" Grid.RowSpan="2">
@@ -95,13 +117,43 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" x:Name="topAlign" Margin="0 0 10 0">
+                        <Button Grid.Column="0" Margin="0,0,10,0" Click="VerticalContentAlignmentBTN_Click" Tag="Top">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Background" Value="LightGray"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedCellProperties.Vertical_Content_Align}" Value="Top">
+                                            <Setter Property="Background" Value="Gray"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
                             <Image Source="/Images/align-center.png" Width="100" Height="30" Margin="0 0 0 15"/>
                         </Button>
-                        <Button Grid.Column="1" x:Name="midAlign" Margin="0 0 10 0">
+                        <Button Grid.Column="1" Margin="0 0 10 0"  Click="VerticalContentAlignmentBTN_Click" Tag="Center">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Background" Value="LightGray"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedCellProperties.Vertical_Content_Align}" Value="Center">
+                                            <Setter Property="Background" Value="Gray"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
                             <Image Source="/Images/align-center.png" Width="100" Height="30" />
                         </Button>
-                        <Button Grid.Column="2" x:Name="bottomAlign">
+                        <Button Grid.Column="2" Click="VerticalContentAlignmentBTN_Click" Tag="Bottom">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Background" Value="LightGray"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedCellProperties.Vertical_Content_Align}" Value="Bottom">
+                                            <Setter Property="Background" Value="Gray"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
                             <Image Source="/Images/align-center.png" Width="100" Height="30" Margin="0 15 0 0"/>
                         </Button>
                     </Grid>
@@ -113,13 +165,43 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" x:Name="leftAlign" Margin="0 0 10 0">
+                        <Button Grid.Column="0" Margin="0 0 10 0" Click="HorizontalContentAlign_BTN_Click" Tag="Left">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Background" Value="LightGray"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedCellProperties.Horizontal_Content_Align}" Value="Left">
+                                            <Setter Property="Background" Value="Gray"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
                             <Image Source="/Images/align-left.png" Width="100" Height="30" />
                         </Button>
-                        <Button Grid.Column="1" x:Name="centerAlign" Margin="0 0 10 0">
+                        <Button Grid.Column="1" x:Name="centerAlign" Margin="0 0 10 0" Click="HorizontalContentAlign_BTN_Click" Tag="Center">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Background" Value="LightGray"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedCellProperties.Horizontal_Content_Align}" Value="Center">
+                                            <Setter Property="Background" Value="Gray"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
                             <Image Source="/Images/align-center.png" Width="100" Height="30"/>
                         </Button>
-                        <Button Grid.Column="2" x:Name="rightAlign">
+                        <Button Grid.Column="2" Click="HorizontalContentAlign_BTN_Click" Tag="Right" >
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Background" Value="LightGray"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedCellProperties.Horizontal_Content_Align}" Value="Right">
+                                            <Setter Property="Background" Value="Gray"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
                             <Image Source="/Images/align-right.png" Width="100" Height="30"/>
                         </Button>
                     </Grid>
