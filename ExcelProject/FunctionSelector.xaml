@@ -19,20 +19,24 @@
                     <ColumnDefinition Width="3*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBox x:Name="nameSearch" Height="30" VerticalAlignment="Top"/>
-                <Button Content="Keresés" HorizontalAlignment="Right" Height="25" Width="80" VerticalAlignment="Top" Grid.Column="1"/>
+                <TextBox x:Name="fnNameSearchVal" Height="30" VerticalAlignment="Top"/>
+                <Button x:Name="searchBtn" Content="Keresés" HorizontalAlignment="Right" Height="25" Width="80" VerticalAlignment="Top" Grid.Column="1" Click="searchBtn_Click"/>
             </Grid>
         </GroupBox>
         <GroupBox Header="A függvény neve:" Grid.Row="1">
             <Grid HorizontalAlignment="Stretch" Margin="5">
-                <ListBox x:Name="functionsList">
-
+                <ListBox x:Name="functionsList" ItemsSource="{Binding FuncsToShow}" SelectedItem="{Binding SelectedFunction}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
                 </ListBox>
             </Grid>
         </GroupBox>
         <StackPanel Grid.Row="2">
-            <Label Content="TITLE" FontWeight="Bold" Height="25"/>
-            <Label Content="description" VerticalContentAlignment="Top" VerticalAlignment="Stretch"/>
+            <Label Content="{Binding SelectedFunction.Name}" FontWeight="Bold" Height="25"/>
+            <TextBlock Text="{Binding SelectedFunction.Description}" VerticalAlignment="Top" TextWrapping="Wrap" Margin="10 0 0 0"/>
         </StackPanel>
         <!--<TextBlock Grid.Row="3">           
             <Hyperlink NavigateUri="http://www.google.com" RequestNavigate="Hyperlink_RequestNavigate">

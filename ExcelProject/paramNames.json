@@ -12,12 +12,12 @@
   {
     "Name": "SZUMHA",
     "Values": [ "*number", "territory", "criteria" ],
-    "Description": "Adott cellatartomány értékeit adja össze egy krutérium alapján"
+    "Description": "Adott cellatartomány értékeit adja össze egy kritérium alapján"
   },
   {
     "Name": "ÁTLAGHA",
     "Values": [ "*number", "territory", "criteria" ],
-    "Description": "Adott cellatartomány értékeit átlagolja egy krutérium alapján"
+    "Description": "Adott cellatartomány értékeit átlagolja egy kritérium alapján"
   },
   {
     "Name": "DARAB",

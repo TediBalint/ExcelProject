@@ -8,6 +8,7 @@ using System.IO;
 using System.Text.Json;
 using System.Diagnostics;
 using System.Reflection;
+using System.Windows.Controls;
 
 namespace ExcelProject
 {
@@ -15,14 +16,14 @@ namespace ExcelProject
         public string Name { get; private set; }
         private string[] ParameterNames { get; set; }
         private Dictionary<string, string> Parameters { get; set; } = new();
-        public static string[] allFnNames { get; set; }
         public string Description { get; private set; }
-
-        public Function(string _name, string _params) {
+        private static readonly string secretCharacter = "¶";
+        private Function(string _name, string _params) {
             Name = _name;
             InitializeParamNames();
+            if (_params == secretCharacter) return;
             string[] paramVals = _params.Split(';');
-            if (ParameterNames[0].StartsWith("*")) {
+            if (ParameterNames[0].StartsWith("*")) { 
                 int minus = ParameterNames.Length - 1;
                 for (int i = 0; i < paramVals.Length - minus; i++) {
                     try {
@@ -46,22 +47,26 @@ namespace ExcelProject
                 }
             }
         }
+        public static Function?[] getAllFunctions() {
+            string jsonstring = File.ReadAllText("paramNames.json");
+            List<ParamSwitcher>? allFns = JsonSerializer.Deserialize<List<ParamSwitcher>>(jsonstring);
+            return allFns.Select(n => Compile($"={n.Name}({secretCharacter})")).ToArray();
+        }
         private void InitializeParamNames() {
             string jsonstring = File.ReadAllText("paramNames.json");
-            var allFns = JsonSerializer.Deserialize<List<ParamSwitcher>>(jsonstring);
-            allFnNames = allFns.Select(n => n.Name).ToArray();
-            var fn = allFns.Where(x => x.Name == Name).First();
+            List<ParamSwitcher>? allFns = JsonSerializer.Deserialize<List<ParamSwitcher>>(jsonstring);
+            ParamSwitcher fn = allFns.Where(x => x.Name == Name).First();
             ParameterNames = fn.Values;
             Description = fn.Description;
         }
         public string Invoke() {
             switch (Name) {
                 case "SZUM":
-                    return SumOrAvg(true).ToString();
+                    return SumOrAvg().ToString();
                 case "ÁTLAG":
                     return SumOrAvg(false).ToString();
                 case "SZUMHA":
-                    return SumIfOrAvgIf(true).ToString();
+                    return SumIfOrAvgIf().ToString();
                 case "ÁTLAGHA":
                     return SumIfOrAvgIf(false).ToString();
                 case "DARAB":
@@ -69,7 +74,7 @@ namespace ExcelProject
                 case "DARABHA":
                     return CountIf().ToString();
                 case "MAX":
-                    return Extreme(true).ToString();
+                    return Extreme().ToString();
                 case "MIN":
                     return Extreme(false).ToString();
                 case "INDEX":
@@ -77,14 +82,15 @@ namespace ExcelProject
                 case "HOL.VAN":
                     return WhereIs().ToString();
                 case "BAL":
-                    return LeftOrRight(true);
+                    return LeftOrRight();
                 case "JOBB":
-                    return LeftOrRight(true);
+                    return LeftOrRight(false);
                 default:
                     throw new Exception("Ezt hogy csináltad, kedves User?!?");
+                    //sima eval?
             }
         }
-        private double SumOrAvg(bool sumOnly) {
+        private double SumOrAvg(bool sumOnly = true) {
             int sum = 0;
             int count = 0;
             foreach (var param in Parameters) {
@@ -97,7 +103,7 @@ namespace ExcelProject
             if (sumOnly) return sum;
             return sum / count;
         }
-        private double SumIfOrAvgIf(bool sumOnly) {
+        private double SumIfOrAvgIf(bool sumOnly = true) {
             return 0;
         }
         private int Count() {
@@ -106,7 +112,7 @@ namespace ExcelProject
         private int CountIf() {
             return 0;
         }
-        private double Extreme(bool max) {
+        private double Extreme(bool max = true) {
             return 0;
         }
         private int WhereIs() {
@@ -115,8 +121,21 @@ namespace ExcelProject
         private string Index() {
             return "";
         }
-        private string LeftOrRight(bool left) {
+        private string LeftOrRight(bool left = true) {
             return "";
+        }
+        public static Function? Compile(string arg) {
+            if (arg.Length == 0 || arg[0] != '=') return null;
+            try {
+                if (!arg.Contains('(') || arg[^1] != ')') return null;
+                string[] pcs = string.Join(string.Empty, arg.ToList().Skip(1)).Split('(');
+                string _name = pcs[0];
+                string _params = string.Join(string.Empty, pcs[1].Take(pcs[1].Length - 1));
+                return new Function(_name, _params);
+            }
+            catch {
+                return null;
+            }
         }
     }
 }
