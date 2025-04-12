@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,6 +28,22 @@ namespace ExcelProject
 
 		public static Dictionary<FontWeight, Brush> WeightToBrush = new Dictionary<FontWeight, Brush>()
 		{ {FontWeights.Bold, Brushes.Gray}, {FontWeights.Normal, Brushes.LightGray }};
+
+		public static Dictionary<FontStyle, Brush> StyleToBrush = new Dictionary<FontStyle, Brush>()
+		{ {FontStyles.Italic, Brushes.Gray}, {FontStyles.Normal, Brushes.LightGray }};
+
+		public const string FONT_FILE_PATH = "Data/fonts.txt";
+		public const string DEFAULT_FONT_SIZE_FILE_PATH = "Data/default_font_size.txt";
+
+		public static ObservableCollection<KeyValuePair<string, TextDecorationCollection?>> textDecorations { get; set; } = new ObservableCollection<KeyValuePair<string, TextDecorationCollection?>>()
+		{	new KeyValuePair<string, TextDecorationCollection?>("Nincs", null),
+			new KeyValuePair<string, TextDecorationCollection?>("Normál", TextDecorations.Underline),
+			new KeyValuePair<string, TextDecorationCollection?>("Vékony", TextDecorations.Baseline),
+			new KeyValuePair<string, TextDecorationCollection?>("Fölé", TextDecorations.OverLine),
+			new KeyValuePair<string, TextDecorationCollection?>("Áthúzás", TextDecorations.Strikethrough)
+		};
 	}
+
+		
 	
 }

@@ -65,9 +65,9 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <ComboBox x:Name="fontfamily" Grid.Column="0" ItemsSource="{Binding fontFamilies}" SelectedItem="{Binding SelectedCellProperties.Font_Family}"  Margin="0 0 10 0"/>
-                        <ComboBox x:Name="fontsize" Grid.Column="1"  Margin="0 0 10 0"/>
-                        <Button x:Name="size_plus" Grid.Column="2" Content="A+"  Margin="0 5 3 5"/>
-                        <Button x:Name="size_minus" Grid.Column="3" Content="A-" Margin="0 5 3 5"/>
+                        <ComboBox x:Name="fontsize" Grid.Column="1"  Margin="0 0 10 0" ItemsSource="{Binding fontSizes}" SelectedValue="{Binding SelectedCellProperties.Font_Size}"/>
+                        <Button x:Name="size_plus" Grid.Column="1" Content="A+"  Margin="0,5,3,5" Grid.ColumnSpan="2" HorizontalAlignment="Right" Width="35" Click="size_plus_Click"/>
+                        <Button x:Name="size_minus" Grid.Column="3" Content="A-" Margin="0 5 3 5" Click="size_minus_Click"/>
                     </Grid>
                 </Border>
                 <Border Style="{StaticResource side_BRD}" Grid.Row="1" Grid.Column="1">
@@ -75,13 +75,13 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="0.8*"/>
-                            <ColumnDefinition Width="0.8*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Button Grid.Column="0" x:Name="fontweight" Margin="0 0 5 0" Content="F" Background="{Binding BoldButtonBackground, Mode=OneWay}" FontWeight="Bold" Click="fontweight_Click"/>
-                        <Button Grid.Column="1" x:Name="fontstyle" Margin="5 0" Content="D" FontStyle="Italic" />
-                        <ComboBox Grid.Column="2" Grid.ColumnSpan="2" x:Name="fontdecoration" Margin="5 0" ItemsSource="{Binding textDecorations}" DisplayMemberPath="TextDecorations"/>
+                        <Button Grid.Column="1" x:Name="fontstyle" Margin="5 0" Content="D" FontStyle="Italic" Background="{Binding ItalicButtonBackground, Mode=OneWay}" Click="fontstyle_Click" />
+                        <ComboBox Grid.Column="2" Grid.ColumnSpan="2" x:Name="fontdecoration" Margin="5 0" ItemsSource="{Binding textDecorations}" DisplayMemberPath="Key" SelectedValuePath="Value" SelectedValue="{Binding SelectedCellProperties.Text_Decoration}"/>
                         <ComboBox Grid.Column="4"  x:Name="fgcolor" Margin="5 0"/>
                     </Grid>
                 </Border>
@@ -115,7 +115,7 @@
                         </Grid.ColumnDefinitions>
                         <Button Grid.Column="0" x:Name="leftAlign" Margin="0 0 10 0">
                             <Image Source="/Images/align-left.png" Width="100" Height="30" />
-                         </Button>
+                        </Button>
                         <Button Grid.Column="1" x:Name="centerAlign" Margin="0 0 10 0">
                             <Image Source="/Images/align-center.png" Width="100" Height="30"/>
                         </Button>
@@ -145,15 +145,15 @@
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                            
-                        <Button Grid.Row="0" Grid.Column="0" x:Name="normalformat" Content="Normál" Margin="10" Background="White"/>
-                        <Button Grid.Row="0" Grid.Column="1" x:Name="goodformat" Content="Jó" Margin="10" Background="LightGreen" Foreground="Green"/>
-                        <Button Grid.Row="0" Grid.Column="2" x:Name="badformat" Content="Rossz" Margin="10" Background="Pink" Foreground="Red"/>
-                        <Button Grid.Row="0" Grid.Column="3" x:Name="neutralformat" Content="Semleges" Margin="10" Background="Gold" Foreground="Brown"/>
-                        <Button Grid.Row="1" Grid.Column="0" x:Name="input" Content="Bevitel" Margin="10" Background="Orange"/>
-                        <Button Grid.Row="1" Grid.Column="1" x:Name="check" Content="Ellenőrzőcella" Margin="10" Background="DarkGray" Foreground="White"/>
-                        <Button Grid.Row="1" Grid.Column="2" x:Name="warning" Content="Figyelmeztet" Margin="10" Background="White" Foreground="Red"/>
-                        <Button Grid.Row="1" Grid.Column="3" x:Name="link" Content="Hivatkozás" Margin="10" Background="White" Foreground="SandyBrown"/>
+
+                        <Button Grid.Row="0" Grid.Column="0" Click="StyleBTN_Click" Content="Normál" Margin="10" Background="White"/>
+                        <Button Grid.Row="0" Grid.Column="1" Click="StyleBTN_Click" Content="Jó" Margin="10" Background="LightGreen" Foreground="Green"/>
+                        <Button Grid.Row="0" Grid.Column="2" Click="StyleBTN_Click" Content="Rossz" Margin="10" Background="Pink" Foreground="Red"/>
+                        <Button Grid.Row="0" Grid.Column="3" Click="StyleBTN_Click" Content="Semleges" Margin="10" Background="Gold" Foreground="Brown"/>
+                        <Button Grid.Row="1" Grid.Column="0" Click="StyleBTN_Click" Content="Bevitel" Margin="10" Background="Orange"/>
+                        <Button Grid.Row="1" Grid.Column="1" Click="StyleBTN_Click" Content="Ellenőrzőcella" Margin="10" Background="DarkGray" Foreground="White"/>
+                        <Button Grid.Row="1" Grid.Column="2" Click="StyleBTN_Click" Content="Figyelmeztet" Margin="10" Background="White" Foreground="Red"/>
+                        <Button Grid.Row="1" Grid.Column="3" Click="StyleBTN_Click" Content="Hivatkozás" Margin="10" Background="White" Foreground="SandyBrown"/>
                     </Grid>
                 </Border>
                 <Border Style="{StaticResource side_BRD}" Grid.Row="2" Grid.Column="3" Grid.RowSpan="2">
@@ -166,7 +166,7 @@
             </Grid>
 
             <!--<Grid>-->
-                
+
         </Border>
         <StackPanel Grid.Row="1" Orientation="Horizontal">
             <Border Margin="20 0 10 0" BorderBrush="Gray" BorderThickness="1">
@@ -208,9 +208,7 @@
                 </StackPanel>
             </Border>
             <Border BorderBrush="Gray" BorderThickness="1">
-                <TextBox VerticalContentAlignment="Center" VerticalAlignment="Stretch" Width="1760" FontSize="24" >
-                    
-                </TextBox>
+                <TextBox VerticalContentAlignment="Center" VerticalAlignment="Stretch" Width="1760" FontSize="24" Text="{Binding SelectedCellProperties.Text, UpdateSourceTrigger=PropertyChanged}" />
             </Border>
             <!--függvényillesztő-->
         </StackPanel>
@@ -218,8 +216,8 @@
             <!--exceltable-->
         </Grid>
         <StackPanel Grid.Row="3" Orientation="Horizontal">
-            
+
         </StackPanel>
-        
+
     </Grid>
 </Window>

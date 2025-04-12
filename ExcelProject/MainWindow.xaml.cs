@@ -27,35 +27,59 @@ namespace ExcelProject
             get
             {
                 if(SelectedCellProperties != null) return Statics.WeightToBrush[SelectedCellProperties.Font_Weight];
-                else {  return Brushes.LightGray;  }
+                else return Brushes.LightGray;
+			}
+        }
+        public Brush ItalicButtonBackground
+        {
+            get
+            {
+                if(SelectedCellProperties != null) return Statics.StyleToBrush[SelectedCellProperties.Font_Style];
+                else return Brushes.LightGray;
 			}
         }
 		public ObservableCollection<ObservableCollection<CellPropertiesModel>> cellPropertiesModels { get; set; } = new ObservableCollection<ObservableCollection<CellPropertiesModel>>();
         public ObservableCollection<FontFamily> fontFamilies { get; set; } = new ObservableCollection<FontFamily>();
-        public ObservableCollection<TextDecorationCollection> textDecorations { get; set; } = new ObservableCollection<TextDecorationCollection>() { TextDecorations.Underline, TextDecorations.Baseline, TextDecorations.OverLine};
+        public ObservableCollection<KeyValuePair<string, TextDecorationCollection>> textDecorations { get; set; } = Statics.textDecorations;
+        public ObservableCollection<double> fontSizes { get; set; } = new ObservableCollection<double>();
         public CellPropertiesModel? selectedCellProperties { get; set; }
         public CellPropertiesModel? SelectedCellProperties
         {   
             get {return selectedCellProperties;}
-            set { selectedCellProperties = value; OnPropertyChanged(nameof(SelectedCellProperties)); OnPropertyChanged(nameof(BoldButtonBackground)); }
+            set { selectedCellProperties = value; OnPropertyChanged(nameof(SelectedCellProperties)); OnPropertyChanged(nameof(BoldButtonBackground)); OnPropertyChanged(nameof(ItalicButtonBackground)); }
         }
 		public MainWindow()
         {
             InitializeComponent();
             DataContext = this;
-            setFontFamilies();
+            readFontFamilies();
+            readFontSizes();
             makeList(20);
             makeTBXs();
         }
-        private void setFontFamilies()
+        
+        private void readFontFamilies()
         {
-            using (StreamReader sr = new StreamReader("fonts.txt"))
+            using (StreamReader sr = new StreamReader(Statics.FONT_FILE_PATH))
             {
                 while (!sr.EndOfStream)
                 {
                     string? line = sr.ReadLine();
+                    if(line == null) continue;
                     line = line.Remove(0, 3);
                     fontFamilies.Add(new FontFamily(line));
+                }
+            }
+        }
+        private void readFontSizes()
+        {
+            using (StreamReader sr = new StreamReader(Statics.DEFAULT_FONT_SIZE_FILE_PATH))
+            {
+                while (!sr.EndOfStream)
+                {
+                    string? line = sr.ReadLine();
+                    if(line == null) continue;
+                    fontSizes.Add(double.Parse(line));
                 }
             }
         }
@@ -132,7 +156,7 @@ namespace ExcelProject
 			{
 				Source = cellPropertiesModels[i][j],
 				Mode = BindingMode.TwoWay,
-				UpdateSourceTrigger = UpdateSourceTrigger.Default
+				UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
 			};
 			tbx.SetBinding(prop.Key, binding);
 		}
@@ -154,7 +178,6 @@ namespace ExcelProject
 
 		private void fontweight_Click(object sender, RoutedEventArgs e)
 		{
-            if (sender.GetType() != typeof(Button)) return;
             if(SelectedCellProperties == null) return;
             if (SelectedCellProperties.Font_Weight == FontWeights.Bold) SelectedCellProperties.Font_Weight = FontWeights.Normal;
             else SelectedCellProperties.Font_Weight = FontWeights.Bold;
@@ -164,7 +187,37 @@ namespace ExcelProject
 		private void insertFuncBtn_Click(object sender, RoutedEventArgs e)
 		{
             Window functionselectorWindw = new FunctionSelector();
-            functionselectorWindw.Show();
+            functionselectorWindw.ShowDialog();
+		}
+
+		private void size_plus_Click(object sender, RoutedEventArgs e)
+		{
+            if (SelectedCellProperties == null) return;
+            int idx = fontSizes.IndexOf(SelectedCellProperties.Font_Size) + 1;
+            if(idx < fontSizes.Count) SelectedCellProperties.Font_Size = fontSizes[idx];
+		}
+
+		private void size_minus_Click(object sender, RoutedEventArgs e)
+		{
+			if (SelectedCellProperties == null) return;
+			int idx = fontSizes.IndexOf(SelectedCellProperties.Font_Size) - 1;
+			if (idx >= 0) SelectedCellProperties.Font_Size = fontSizes[idx];
+		}
+
+		private void fontstyle_Click(object sender, RoutedEventArgs e)
+		{
+			if (SelectedCellProperties == null) return;
+            if (SelectedCellProperties.Font_Style == FontStyles.Normal) SelectedCellProperties.Font_Style = FontStyles.Italic;
+            else SelectedCellProperties.Font_Style = FontStyles.Normal;
+			OnPropertyChanged(nameof(ItalicButtonBackground));
+		}
+
+		private void StyleBTN_Click(object sender, RoutedEventArgs e)
+		{
+            if (sender.GetType() != typeof(Button) || SelectedCellProperties == null) return;
+            Button btn = (Button)sender;
+            SelectedCellProperties.Background_Color = btn.Background;
+            SelectedCellProperties.Foreground_Color = btn.Foreground;
 		}
 	}
 }

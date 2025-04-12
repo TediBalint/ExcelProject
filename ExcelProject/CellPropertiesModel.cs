@@ -13,21 +13,56 @@ namespace ExcelProject
 {
     public class CellPropertiesModel: INotifyPropertyChanged
     {
-        public string Text { get; set; }
-        public FontFamily Font_Family { get; set; }
+        private string text;
+        public string Text 
+        { 
+            get { return text; } 
+            set { text = value; OnPropertyChanged(nameof(Text));}
+        }
+        private FontFamily font_Family;
+        public FontFamily Font_Family 
+        { 
+            get { return font_Family; }
+            set { font_Family = value;OnPropertyChanged(nameof(Font_Family)); } 
+        }
         public GridLength Width { get; set; }
         public GridLength Height { get; set; }
-        public double Font_Size { get; set; }
+        private double font_Size;
+        public double Font_Size 
+        {
+            get { return font_Size; }
+            set { font_Size = value; OnPropertyChanged(nameof(Font_Size)); } 
+        }
         private FontWeight font_Weight;
         public FontWeight Font_Weight 
         { 
             get { return font_Weight; }
             set { font_Weight = value; OnPropertyChanged(nameof(font_Weight)); }
         }
-		public FontStyle Font_Style { get; set; }
-        public TextDecorationCollection Text_Decoration { get; set; }
-        public Brush Foreground_Color { get; set; } 
-        public Brush Background_Color { get; set; }
+		private FontStyle font_Style { get; set; }
+		public FontStyle Font_Style 
+        {
+            get { return font_Style; }
+            set { font_Style = value; OnPropertyChanged(nameof(Font_Style)); }
+        }
+        private TextDecorationCollection text_Decoration;
+        public TextDecorationCollection Text_Decoration 
+        {
+            get { return text_Decoration; }
+            set { text_Decoration = value; OnPropertyChanged(nameof(Text_Decoration)); } 
+        }
+        private Brush foreground_Color;
+        public Brush Foreground_Color 
+        {
+            get { return foreground_Color; }
+            set { foreground_Color = value; OnPropertyChanged(nameof(Foreground_Color)); } 
+        }
+        private Brush background_Color;
+		public Brush Background_Color
+		{
+			get { return background_Color; }
+			set { background_Color = value; OnPropertyChanged(nameof(Background_Color)); }
+		}
         public VerticalAlignment Vertical_Content_Align { get; set; }
         public HorizontalAlignment Horizontal_Content_Align { get; set; }
            
