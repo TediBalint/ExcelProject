@@ -29,7 +29,7 @@
         <StackPanel Orientation="Vertical" Grid.Row="1">
             <StackPanel Orientation="Horizontal">
                 <Label Content="Érték:"/>
-                <Label Content="prewiev"/>
+                <Label Content="{Binding FnPreview}" x:Name="fnValuePreview" FontWeight="Bold"/>
             </StackPanel>
             <TextBlock Text="{Binding SelectedFunction.Description}" Grid.Row="1" TextWrapping="Wrap" Margin="5 0 0 0"/>
         </StackPanel>

@@ -15,11 +15,12 @@ namespace ExcelProject
     public class Function {
         public string Name { get; private set; }
         public string[] ParameterNames { get; private set; }
-        public Dictionary<string, string> Parameters { get; set; } = new();
+        public Dictionary<string, string> Parameters { get; set; }
         public string Description { get; private set; }
         private static readonly string secretCharacter = "🜲";
         private Function(string _name, string _params) {
             Name = _name;
+            Parameters = new();
             InitializeParamNames();
             if (_params == secretCharacter) return;
             string[] paramVals = _params.Split(';');
@@ -122,13 +123,23 @@ namespace ExcelProject
             return "";
         }
         private string LeftOrRight(bool left = true) {
-            return "";
+            if(left) {
+                return string.Join(string.Empty, Parameters["Szöveg"].ToList().Take(int.Parse(Parameters["n"])));
+            }
+            return string.Join(string.Empty, Parameters["Szöveg"].ToList().Skip(Parameters["Szöveg"].Length - int.Parse(Parameters["n"])));
         }
+        //private static double Evaluate(string expression) {
+        //    System.Data.DataTable table = new System.Data.DataTable();
+        //    table.Columns.Add("expression", string.Empty.GetType(), expression);
+        //    System.Data.DataRow row = table.NewRow();
+        //    table.Rows.Add(row);
+        //    return double.Parse((string)row["expression"]);
+        //} -- meg kesobb jol johet, ha megertettem
         public static Function? Compile(string arg) {
-            if (arg.Length == 0 || arg[0] != '=') return null;
+            if (arg.Length == 0) return null; // nem feltetlen = vel kezdodik
             try {
                 if (!arg.Contains('(') || arg[^1] != ')') return null;
-                string[] pcs = string.Join(string.Empty, arg.ToList().Skip(1)).Split('(');
+                string[] pcs = string.Join(string.Empty, arg.ToList().Skip(1)).Split('('); // egyenloseg jelet leveszi
                 string _name = pcs[0];
                 string _params = string.Join(string.Empty, pcs[1].Take(pcs[1].Length - 1));
                 return new Function(_name, _params);
