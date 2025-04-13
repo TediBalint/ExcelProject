@@ -50,5 +50,14 @@ namespace ExcelProject
         public void OnPropertyChanged(string tulajdonsagNev) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(tulajdonsagNev));
         }
+        private void ok_Click(object sender, RoutedEventArgs e) {
+            //DialogResult = true;
+            Hide();
+            FunctionEditor fe = new FunctionEditor(SelectedFunction);
+            fe.ShowDialog();
+            if(fe.DialogResult != null) {
+                Close();
+            }
+        }
     }
 }

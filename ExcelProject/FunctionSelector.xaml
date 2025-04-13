@@ -57,7 +57,7 @@
                             <Setter Property="Margin" Value="10 5 5 0"/>
                         </Style>
                     </StackPanel.Resources>
-                    <Button Content="OK"/>
+                    <Button Content="OK" x:Name="ok" Click="ok_Click"/>
                     <Button Content="Mégse" x:Name="cancel" Click="cancel_Click"/>
                 </StackPanel>
             </Grid>

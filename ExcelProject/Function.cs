@@ -14,10 +14,10 @@ namespace ExcelProject
 {
     public class Function {
         public string Name { get; private set; }
-        private string[] ParameterNames { get; set; }
-        private Dictionary<string, string> Parameters { get; set; } = new();
+        public string[] ParameterNames { get; private set; }
+        public Dictionary<string, string> Parameters { get; set; } = new();
         public string Description { get; private set; }
-        private static readonly string secretCharacter = "¶";
+        private static readonly string secretCharacter = "🜲";
         private Function(string _name, string _params) {
             Name = _name;
             InitializeParamNames();
@@ -27,7 +27,7 @@ namespace ExcelProject
                 int minus = ParameterNames.Length - 1;
                 for (int i = 0; i < paramVals.Length - minus; i++) {
                     try {
-                        Parameters.Add($"param{i + 1}", paramVals[i]); // tartományt valahogy handle-elni
+                        Parameters.Add($"{ParameterNames[i].Replace("*", "")}{i + 1}", paramVals[i]); // tartományt valahogy handle-elni
                     }
                     catch {
                         throw new Exception("A paraméterek száma nem elegendő");
