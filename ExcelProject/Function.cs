@@ -23,28 +23,47 @@ namespace ExcelProject
             Parameters = new();
             InitializeParamNames();
             if (_params == secretCharacter) return;
-            string[] paramVals = _params.Split(';');
+            List<string> paramVals = new();
+            bool readyToSplit = true;
+            int lastIdx = 0;
+            for (int i = 0; i < _params.Length;i++)
+            {
+                if (_params[i] == '(') {
+                    readyToSplit = false;
+                }
+                else if (_params[i] == ';' && readyToSplit) {
+                    paramVals.Add(_params.Substring(lastIdx, i - lastIdx));
+                    lastIdx = i + 1;
+                }
+                else if(_params[i] == ')')
+                {
+                    readyToSplit = true;
+                }
+            }
+            paramVals.Add(_params.Substring(lastIdx, _params.Length - lastIdx));
             if (ParameterNames[0].StartsWith("*")) { 
                 int minus = ParameterNames.Length - 1;
-                for (int i = 0; i < paramVals.Length - minus; i++) {
-                    try {
-                        string evaluatedParam = Compile(paramVals[i]).Invoke(); // szar a split
-                        Parameters.Add($"{ParameterNames[i].Replace("*", "")}{i + 1}", paramVals[i]); // tartományt valahogy handle-elni
+                for (int i = 0; i < paramVals.Count - minus; i++) {
+                    try
+                    {
+                        string evaluatedParam = Compile(paramVals[i]).Invoke(); // evaluatel mindent is -- "(5+5)"re hiba
+                        Parameters.Add($"{ParameterNames[0].Replace("*", "")}{i + 1}", evaluatedParam); // tartományt valahogy handle-elni
                     }
-                    catch {
+                    catch
+                    {
                         throw new Exception("A paraméterek száma nem elegendő");
                     }
                 }
                 for (int i = 0; i < minus; i++) {
-                    Parameters.Add(ParameterNames[i + 1], paramVals[i + paramVals.Length - minus]);
+                    Parameters.Add(ParameterNames[i + 1], paramVals[i + paramVals.Count - minus]);
                     //itt is kéne hibát dobni
                 }
             }
             else {
-                if (paramVals.Length != ParameterNames.Length) {
+                if (paramVals.Count != ParameterNames.Length) {
                     throw new Exception("A paraméterek száma nem elegendő");
                 }
-                for (int i = 0; i < paramVals.Length; i++) {
+                for (int i = 0; i < paramVals.Count; i++) {
                     Parameters.Add(ParameterNames[i], paramVals[i]);
                 }
             }
@@ -139,14 +158,16 @@ namespace ExcelProject
             return double.Parse((string)row["expression"]);
         }
         public static Function? Compile(string arg) {
-            if (arg.Length == 0) return null; // nem feltetlen = vel kezdodik
+            if (arg.Length == 0) return null;
             try {
                 if (!arg.Contains('(') || arg[^1] != ')') {
                     Evaluate(arg); // hátha hibát dob
                     return new Function("EVAL", arg);
                 }
-                string[] pcs = string.Join(string.Empty, arg.ToList().Skip(1)).Split('('); // egyenloseg jelet leveszi
-                string _name = pcs[0];
+                string[] pcs = arg.Split('('); 
+                string _name;
+                if (pcs[0][0] == '=') _name = string.Join(string.Empty, pcs[0].ToList().Skip(1));
+                else _name = pcs[0];
                 string _params = string.Join(string.Empty, string.Join('(', pcs.Skip(1)));
                 _params = _params.Remove(_params.Length - 1);
                 return new Function(_name, _params);

@@ -37,7 +37,7 @@ namespace ExcelProject
             SelectedFunction = AllFunctions[0];
             FuncsToShow = AllFunctions;
             DataContext = this;
-            //Function f = Function.Compile("=SZUM(5 + 5;SZUM(2;3))");
+            //Function f = Function.Compile("=SZUM(5;5;SZUM(2;3);(5 + 5))");
             //string s = f.Invoke();
         }
         private void cancel_Click(object sender, RoutedEventArgs e)
