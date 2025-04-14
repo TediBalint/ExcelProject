@@ -18,7 +18,8 @@ namespace ExcelProject {
     /// Interaction logic for FunctionEditor.xaml
     /// </summary>
     public partial class FunctionEditor : Window, INotifyPropertyChanged {
-        public Function SelectedFunction { get; set; }
+        private Function SelectedFunction { get; set; }
+        public Dictionary<string, string> BindedParamVals { get; set; } = new();
         private int AsterixParamCount = 1;
         private string _fnPreview;
         public string FnPreview { 
@@ -40,7 +41,7 @@ namespace ExcelProject {
                 // harmadik oszlop:preview
             }
         }
-        private void createInputRow(string parameterName, int i)
+        private void createInputRow(string parameterName, int i, bool bold = true)
         {
             Label paramName = new Label()
             {
@@ -51,7 +52,7 @@ namespace ExcelProject {
                 VerticalContentAlignment = VerticalAlignment.Center,
                 Height = 25,
                 HorizontalAlignment = HorizontalAlignment.Right,
-                FontWeight = FontWeights.Bold,
+                FontWeight = bold ? FontWeights.Bold : FontWeights.Normal,
                 Tag = parameterName
             };
             SetRowAndAdd(paramName, i);
@@ -64,15 +65,11 @@ namespace ExcelProject {
             };
             paramValue.KeyDown += textBox_KeyDown;
             Binding b;
-            if (parameterName[0] == '*')
-            {
-                b = new Binding($"SelectedFunction.Parameters[{parameterName.Replace("*", "")}{AsterixParamCount}]");
+            if (parameterName[0] == '*') {
+                b = new Binding($"BindedParamVals[{parameterName.Replace("*", "")}{AsterixParamCount}]");
                 AsterixParamCount++;
             }
-            else
-            {
-                b = new Binding($"SelectedFunction.Parameters[{parameterName}]");
-            }
+            else b = new Binding($"BindedParamVals[{parameterName}]");
             b.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
             paramValue.SetBinding(TextBox.TextProperty, b);
             Grid.SetColumn(paramValue, 1);
@@ -94,6 +91,8 @@ namespace ExcelProject {
             if (e.Key == Key.Enter || e.Key == Key.Tab) {
                 try {
                     fnValuePreview.Foreground = Brushes.Black;
+                    SelectedFunction = Function.Compile($"={SelectedFunction.Name.Split('(')[0].Replace("=", "")}({string.Join(';', BindedParamVals.Values)})");
+                    //fix empty param
                     FnPreview = SelectedFunction.Invoke();
                 }
                 catch {
@@ -102,7 +101,7 @@ namespace ExcelProject {
                 }
                 string? tag = ((TextBox)sender).Tag.ToString();
                 if (tag[0] == '*' &&
-                    SelectedFunction.Parameters.ContainsKey(tag.Replace("*", "") + (AsterixParamCount - 1))
+                    BindedParamVals.ContainsKey(tag.Replace("*", "") + (AsterixParamCount - 1))
                 ) {
                     paramInputs.RowDefinitions.Add(new RowDefinition());
                     bool pushRow = false;
@@ -110,7 +109,7 @@ namespace ExcelProject {
                     {
                         if (((Control)obj).Tag.ToString()[0] != '*') Grid.SetRow(obj, Grid.GetRow(obj) + 1);
                     }
-                    createInputRow(tag, AsterixParamCount - 1);
+                    createInputRow(tag, AsterixParamCount - 1, false);
                 }
             }
             //Close(); --- teszt
