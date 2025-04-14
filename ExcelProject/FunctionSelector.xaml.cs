@@ -37,6 +37,8 @@ namespace ExcelProject
             SelectedFunction = AllFunctions[0];
             FuncsToShow = AllFunctions;
             DataContext = this;
+            //Function f = Function.Compile("=SZUM(SZUM(1;1);2;1+1)"); // \" a parameterben? - todo
+            //string s = f.Invoke();
         }
         private void cancel_Click(object sender, RoutedEventArgs e)
         {
@@ -55,7 +57,7 @@ namespace ExcelProject
             Hide();
             FunctionEditor fe = new FunctionEditor(SelectedFunction);
             fe.ShowDialog();
-            if(fe.DialogResult != null) {
+            if (fe.DialogResult != null) {
                 Close();
             }
         }

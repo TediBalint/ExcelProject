@@ -75,25 +75,24 @@ namespace ExcelProject
         {
             Function f = Compile(param);
             string evaluatedParam;
-            if (f != null) evaluatedParam = f.Invoke();
-            else
-            {
-                try { evaluatedParam = Evaluate(param).ToString(); }
-                catch { evaluatedParam = param; }
-            }
+            try { evaluatedParam = Evaluate(param).ToString(); }
+            catch { evaluatedParam = f.Invoke(); }
             return evaluatedParam;
         }
         public static Function?[] getAllFunctions() {
             string jsonstring = File.ReadAllText("paramNames.json");
             List<ParamSwitcher>? allFns = JsonSerializer.Deserialize<List<ParamSwitcher>>(jsonstring);
-            return allFns.Select(n => Compile($"={n.Name}({secretCharacter})")).Where(n => n.Name != "EVAL").ToArray();
+            return allFns.Select(n => Compile($"={n.Name}({secretCharacter})")).ToArray();
         }
         private void InitializeParamNames() {
             string jsonstring = File.ReadAllText("paramNames.json");
             List<ParamSwitcher>? allFns = JsonSerializer.Deserialize<List<ParamSwitcher>>(jsonstring);
-            ParamSwitcher fn = allFns.Where(x => x.Name == Name).First();
-            ParameterNames = fn.Values;
-            Description = fn.Description;
+            ParamSwitcher? fn = allFns.Where(x => x.Name == Name).FirstOrDefault();
+            if (fn != null) {
+                ParameterNames = fn.Values;
+                Description = fn.Description;
+            }
+            else ParameterNames = [];
         }
         private static int TranslateLettersToIdx(string colName) {
             int power = 0;
@@ -108,9 +107,11 @@ namespace ExcelProject
             // %26
             return "";
         }
+        private static string RemoveFirstChar(string str) {
+            return string.Join(string.Empty, str.ToList().Skip(1));
+        }
         public string Invoke() {
-            return Name switch
-            {
+            return Name switch {
                 "SZUM" => SumOrAvg().ToString(),
                 "ÁTLAG" => SumOrAvg(false).ToString(),
                 "SZUMHA" => SumIfOrAvgIf().ToString(),
@@ -123,15 +124,15 @@ namespace ExcelProject
                 "HOL.VAN" => WhereIs().ToString(),
                 "BAL" => LeftOrRight(),
                 "JOBB" => LeftOrRight(false),
-                _ => Name,
+                _ => Name[0] == '=' ? Evaluate(RemoveFirstChar(Name)).ToString() : Name
             };
         }
         private double SumOrAvg(bool sumOnly = true) {
-            int sum = 0;
+            double sum = 0;
             int count = 0;
             foreach (var param in Parameters) {
                 //ha tartomany?
-                sum += int.Parse(param.Value);
+                sum += double.Parse(param.Value);
                 count++;
             }
             if (sumOnly) return sum;
@@ -169,12 +170,11 @@ namespace ExcelProject
             table.Rows.Add(row);
             return double.Parse((string)row["expression"]);
         }
-        public static Function? Compile(string arg) {
-            if (arg.Length == 0) return null;
+        public static Function Compile(string arg) {
             try {
                 string[] pcs = arg.Split('('); 
                 string _name;
-                if (pcs[0][0] == '=') _name = string.Join(string.Empty, pcs[0].ToList().Skip(1));
+                if (pcs[0][0] == '=') _name = RemoveFirstChar(pcs[0]);
                 else _name = pcs[0];
                 string _params = string.Join(string.Empty, string.Join('(', pcs.Skip(1)));
                 _params = _params.Remove(_params.Length - 1);
