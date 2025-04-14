@@ -23,7 +23,9 @@ namespace ExcelProject
 			new KeyValuePair<DependencyProperty, string>(TextBox.ForegroundProperty, "Foreground_Color"),
 			new KeyValuePair<DependencyProperty, string>(TextBox.BackgroundProperty, "Background_Color"),
 			new KeyValuePair<DependencyProperty, string>(TextBox.VerticalContentAlignmentProperty, "Vertical_Content_Align"),
-			new KeyValuePair<DependencyProperty, string>(TextBox.HorizontalContentAlignmentProperty, "Horizontal_Content_Align")
+			new KeyValuePair<DependencyProperty, string>(TextBox.HorizontalContentAlignmentProperty, "Horizontal_Content_Align"),
+			new KeyValuePair<DependencyProperty, string>(TextBox.BorderBrushProperty, "Border_Color"),
+			new KeyValuePair<DependencyProperty, string>(TextBox.BorderThicknessProperty, "Border_Thickness")
 		};
 
 		public static Dictionary<FontWeight, Brush> WeightToBrush = new Dictionary<FontWeight, Brush>()

@@ -104,7 +104,7 @@
                             </Button.Style>
                         </Button>
                         <ComboBox Grid.Column="2" Grid.ColumnSpan="2" x:Name="fontdecoration" Margin="5 0"  VerticalContentAlignment="Center" ItemsSource="{Binding textDecorations}" DisplayMemberPath="Key" SelectedValuePath="Value" SelectedValue="{Binding SelectedCellProperties.Text_Decoration}"/>
-                        <ComboBox Grid.Column="4"  x:Name="fgcolor" Margin="5 0" VerticalContentAlignment="Center" ItemsSource="{Binding Brushes}" DisplayMemberPath="Key" SelectedValuePath="Value" SelectedValue="{Binding SelectedCellProperties.Foreground_Color}"/>
+                        <ComboBox Grid.Column="4"  x:Name="fgcolor" Margin="5 0" VerticalContentAlignment="Center" ItemsSource="{Binding brushes}" DisplayMemberPath="Key" SelectedValuePath="Value" SelectedValue="{Binding SelectedCellProperties.Foreground_Color}"/>
                     </Grid>
                 </Border>
                 <Border Style="{StaticResource side_BRD}" Grid.Row="2" Grid.Column="1" Grid.RowSpan="2">
@@ -228,7 +228,7 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <Button Grid.Row="0" Grid.Column="0" Click="StyleBTN_Click" Content="Normál" Margin="10" Background="White"/>
+                        <Button Grid.Row="0" Grid.Column="0" Click="StyleBTN_Click" Content="Normál" Margin="10" Foreground="Black" Background="White"/>
                         <Button Grid.Row="0" Grid.Column="1" Click="StyleBTN_Click" Content="Jó" Margin="10" Background="LightGreen" Foreground="Green"/>
                         <Button Grid.Row="0" Grid.Column="2" Click="StyleBTN_Click" Content="Rossz" Margin="10" Background="Pink" Foreground="Red"/>
                         <Button Grid.Row="0" Grid.Column="3" Click="StyleBTN_Click" Content="Semleges" Margin="10" Background="Gold" Foreground="Brown"/>
@@ -294,7 +294,7 @@
             </Border>
             <!--függvényillesztő-->
         </StackPanel>
-        <Grid x:Name="table_GRD" Grid.Row="2" Margin="0 10">
+        <Grid x:Name="table_GRD" Grid.Row="2" Margin="0 10" Cursor="Cross">
             <!--exceltable-->
         </Grid>
         <StackPanel Grid.Row="3" Orientation="Horizontal">

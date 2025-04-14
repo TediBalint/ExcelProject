@@ -1,0 +1,29 @@
+﻿<Window x:Class="ExcelProject.CellEditWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ExcelProject"
+        mc:Ignorable="d"
+        Title="CellEditWindow" Height="300" Width="400" FontSize="24">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Row="0" Grid.Column="0" Content="Cella Szerkesztés" HorizontalAlignment="Center" Grid.ColumnSpan="3"/>
+        <Label Grid.Row="1" Grid.Column="0" Content="Magasság:" VerticalAlignment="Center"/>
+        <Label Grid.Row="2" Grid.Column="0" Content="Szélesség:" VerticalAlignment="Center"/>
+        <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" Grid.ColumnSpan="3">
+            <Button x:Name="Ok_BTN" Content="Ok"/>
+            <Button x:Name="Cancel_BTN" Content="Cancel"/>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -75,6 +75,18 @@ namespace ExcelProject
             get { return horizontal_Content_Align; }
             set { horizontal_Content_Align = value; OnPropertyChanged(nameof(Horizontal_Content_Align)); } 
         }
+        private Thickness border_Thickness;
+        public Thickness Border_Thickness
+        {
+            get { return border_Thickness; }
+            set { border_Thickness = value; OnPropertyChanged(nameof(Border_Thickness));}
+        }
+        private Brush border_Color;
+        public Brush Border_Color
+        {
+            get { return border_Color; }
+            set { border_Color = value; OnPropertyChanged(nameof(Border_Color)); }
+        }
         public CellPropertiesModel(bool setValues)
         {
             if (setValues)
@@ -91,6 +103,8 @@ namespace ExcelProject
                 Background_Color = Brushes.White;
                 Vertical_Content_Align = VerticalAlignment.Center;
                 Horizontal_Content_Align = HorizontalAlignment.Center;
+                Border_Thickness = new Thickness(1.0);
+                Border_Color = Brushes.Black;
             }
         }
         public CellPropertiesModel()

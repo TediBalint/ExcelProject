@@ -31,7 +31,7 @@ namespace ExcelProject
             get {return selectedCellProperties;}
             set { selectedCellProperties = value; OnPropertyChanged(nameof(SelectedCellProperties)); }
         }
-        public ObservableCollection<KeyValuePair<string, Brush>> Brushes { get; set; } = Statics.foregroundBrushes;
+        public ObservableCollection<KeyValuePair<string, Brush>> brushes { get; set; } = Statics.foregroundBrushes;
 		public MainWindow()
         {
             InitializeComponent();
@@ -67,8 +67,6 @@ namespace ExcelProject
                 }
             }
         }
-
-
 		private void next_Click(object sender, RoutedEventArgs e)
         {
             FunctionSelector fs = new FunctionSelector();
@@ -85,18 +83,17 @@ namespace ExcelProject
                 }
                 cellPropertiesModels.Add(l);
             }
-
         }
         private void makeTBXs()
         {
             CellPropertiesModel model = new CellPropertiesModel(true);
-            for (int i = 0; i < cellPropertiesModels.Count; i++) 
+            for (int i = 1; i < cellPropertiesModels.Count; i++) 
             {
                 ColumnDefinition column = new ColumnDefinition() {Width = model.Width};
                 RowDefinition row = new RowDefinition() {Height = model.Height};
 				table_GRD.ColumnDefinitions.Add(column);
                 table_GRD.RowDefinitions.Add(row);
-                for (int j = 0; j < cellPropertiesModels[0].Count; j++) 
+                for (int j = 1; j < cellPropertiesModels[0].Count; j++) 
                 {
                     makeTbx(i, j);
                 }
@@ -112,28 +109,27 @@ namespace ExcelProject
 				bindPropoerty(tbx, p, i, j);
 			}
             tbx.Tag = $"{i};{j}";
-			tbx.GotFocus += Tbx_GotFocus; ;
+			tbx.GotFocus += Tbx_GotFocus;
+            tbx.Cursor = Cursors.Cross;
 			table_GRD.Children.Add(tbx);
 		}
+        private void makeBTNs()
+        {
+            for (int i = 0; i < cellPropertiesModels.Count; i++)
+            {
 
+            }
+        }
 		private void Tbx_GotFocus(object sender, RoutedEventArgs e)
 		{
 			if (sender.GetType() != typeof(TextBox)) return;
 			TextBox tbx = (TextBox)sender;
-			int i = int.Parse(tbx.Tag.ToString().Split(';')[0]);
+            if(SelectedCellProperties != null) SelectedCellProperties.Border_Thickness = new Thickness(1);
+            int i = int.Parse(tbx.Tag.ToString().Split(';')[0]);
 			int j = int.Parse(tbx.Tag.ToString().Split(';')[1]);
 			SelectedCellProperties = cellPropertiesModels[i][j];
-		}
-
-		private void Tbx_MouseDown(object sender, MouseButtonEventArgs e)
-		{
-            if (sender.GetType() != typeof(TextBox)) return;
-            TextBox tbx = (TextBox)sender;
-            int i = int.Parse(tbx.Tag.ToString().Split(';')[0]);
-            int j = int.Parse(tbx.Tag.ToString().Split(';')[1]);
-            SelectedCellProperties = cellPropertiesModels[i][j];
-		}
-
+		    SelectedCellProperties.Border_Thickness = new Thickness(2.5);
+        }
 		private void bindPropoerty(TextBox tbx, KeyValuePair<DependencyProperty, string> prop, int i, int j)
         {
 			Binding binding = new Binding(prop.Value)
@@ -144,7 +140,6 @@ namespace ExcelProject
 			};
 			tbx.SetBinding(prop.Key, binding);
 		}
-
 		private void gb_Click(object sender, RoutedEventArgs e)
 		{
             foreach (ObservableCollection<CellPropertiesModel> item in cellPropertiesModels)
