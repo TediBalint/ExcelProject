@@ -13,18 +13,20 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <GroupBox Header="{Binding SelectedFunction.Name}">
-            <Grid x:Name="paramInputs">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="1.5*"/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <Grid.Resources>
-                    <Style TargetType="RowDefinition">
-                        <Setter Property="Height" Value="25"/>
-                    </Style>
-                </Grid.Resources>
-            </Grid>
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                <Grid x:Name="paramInputs">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="1.5*"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.Resources>
+                        <Style TargetType="RowDefinition">
+                            <Setter Property="Height" Value="25"/>
+                        </Style>
+                    </Grid.Resources>
+                </Grid>
+            </ScrollViewer>
         </GroupBox>
         <StackPanel Orientation="Vertical" Grid.Row="1">
             <StackPanel Orientation="Horizontal">

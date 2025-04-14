@@ -36,35 +36,47 @@ namespace ExcelProject {
             for (int i = 0; i < SelectedFunction.ParameterNames.Length; i++) {
                 RowDefinition rd = new RowDefinition();
                 paramInputs.RowDefinitions.Add(rd);
-                Label paramName = new Label() { 
-                    Content = SelectedFunction.ParameterNames[i].Replace("*", ""),
-                    VerticalContentAlignment = VerticalAlignment.Center,
-                    Height = 25,
-                    HorizontalAlignment = HorizontalAlignment.Right,
-                    FontWeight = FontWeights.Bold,
-                };
-                SetRowAndAdd(paramName, i);
-                TextBox paramValue = new TextBox() {
-                    Height = 20,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    VerticalContentAlignment = VerticalAlignment.Center,
-                    Tag = SelectedFunction.ParameterNames[i],
-                };
-                paramValue.KeyDown += textBox_KeyDown;
-                Binding b;
-                if (SelectedFunction.ParameterNames[i][0] == '*') {
-                    b = new Binding($"SelectedFunction.Parameters[{SelectedFunction.ParameterNames[i].Replace("*", "")}{AsterixParamCount}]") ;
-                    AsterixParamCount++;
-                }
-                else {
-                    b = new Binding($"SelectedFunction.Parameters[{SelectedFunction.ParameterNames[i]}]");
-                }
-                b.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
-                paramValue.SetBinding(TextBox.TextProperty, b);
-                Grid.SetColumn(paramValue, 1);
-                SetRowAndAdd(paramValue, i);
+                createInputRow(SelectedFunction.ParameterNames[i], i);
                 // harmadik oszlop:preview
             }
+        }
+        private void createInputRow(string parameterName, int i)
+        {
+            Label paramName = new Label()
+            {
+                Content =
+                        parameterName[0] == '*' ?
+                        parameterName.Replace("*", "") + (i + 1).ToString() :
+                        parameterName,
+                VerticalContentAlignment = VerticalAlignment.Center,
+                Height = 25,
+                HorizontalAlignment = HorizontalAlignment.Right,
+                FontWeight = FontWeights.Bold,
+                Tag = parameterName
+            };
+            SetRowAndAdd(paramName, i);
+            TextBox paramValue = new TextBox()
+            {
+                Height = 20,
+                VerticalAlignment = VerticalAlignment.Center,
+                VerticalContentAlignment = VerticalAlignment.Center,
+                Tag = parameterName
+            };
+            paramValue.KeyDown += textBox_KeyDown;
+            Binding b;
+            if (parameterName[0] == '*')
+            {
+                b = new Binding($"SelectedFunction.Parameters[{parameterName.Replace("*", "")}{AsterixParamCount}]");
+                AsterixParamCount++;
+            }
+            else
+            {
+                b = new Binding($"SelectedFunction.Parameters[{parameterName}]");
+            }
+            b.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+            paramValue.SetBinding(TextBox.TextProperty, b);
+            Grid.SetColumn(paramValue, 1);
+            SetRowAndAdd(paramValue, i);
         }
         private void SetRowAndAdd(Control control, int row) {
             Grid.SetRow(control, row);
@@ -88,7 +100,18 @@ namespace ExcelProject {
                     fnValuePreview.Foreground = Brushes.Red;
                     FnPreview = "Hiba";
                 }
-                //finally: myGrid.RowDefinitions.Insert(2, newRow);
+                string? tag = ((TextBox)sender).Tag.ToString();
+                if (tag[0] == '*'  
+
+                ) { // mivan ha ures az ujabb
+                    paramInputs.RowDefinitions.Add(new RowDefinition());
+                    bool pushRow = false;
+                    foreach(UIElement obj in paramInputs.Children)
+                    {
+                        if (((Control)obj).Tag.ToString()[0] != '*') Grid.SetRow(obj, Grid.GetRow(obj) + 1);
+                    }
+                    createInputRow(tag, AsterixParamCount - 1);
+                }
             }
             //Close(); --- teszt
         }
