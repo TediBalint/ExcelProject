@@ -46,12 +46,12 @@ namespace ExcelProject
                 for (int i = 0; i < paramVals.Count - minus; i++) {
                     try
                     {
-                        string evaluatedParam = Compile(paramVals[i]).Invoke(); // evaluatel mindent is -- "(5+5)"re hiba
+                        string evaluatedParam = Compile(paramVals[i]).Invoke();
                         Parameters.Add($"{ParameterNames[0].Replace("*", "")}{i + 1}", evaluatedParam); // tartományt valahogy handle-elni
                     }
                     catch
                     {
-                        throw new Exception("A paraméterek száma nem elegendő");
+                        throw new Exception("A paraméterek száma nem elegendő"); // compile miatt meg egy catch ág?
                     }
                 }
                 for (int i = 0; i < minus; i++) {
@@ -64,6 +64,7 @@ namespace ExcelProject
                     throw new Exception("A paraméterek száma nem elegendő");
                 }
                 for (int i = 0; i < paramVals.Count; i++) {
+                    // itt is evalolni! -- akkor ide is try
                     Parameters.Add(ParameterNames[i], paramVals[i]);
                 }
             }
@@ -160,10 +161,11 @@ namespace ExcelProject
         public static Function? Compile(string arg) {
             if (arg.Length == 0) return null;
             try {
-                if (!arg.Contains('(') || arg[^1] != ')') {
-                    Evaluate(arg); // hátha hibát dob
+                try
+                {
+                    Evaluate(arg);
                     return new Function("EVAL", arg);
-                }
+                } catch { }
                 string[] pcs = arg.Split('('); 
                 string _name;
                 if (pcs[0][0] == '=') _name = string.Join(string.Empty, pcs[0].ToList().Skip(1));
