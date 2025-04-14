@@ -28,6 +28,7 @@ namespace ExcelProject
                 int minus = ParameterNames.Length - 1;
                 for (int i = 0; i < paramVals.Length - minus; i++) {
                     try {
+                        string evaluatedParam = Compile(paramVals[i]).Invoke(); // szar a split
                         Parameters.Add($"{ParameterNames[i].Replace("*", "")}{i + 1}", paramVals[i]); // tartományt valahogy handle-elni
                     }
                     catch {
@@ -51,7 +52,7 @@ namespace ExcelProject
         public static Function?[] getAllFunctions() {
             string jsonstring = File.ReadAllText("paramNames.json");
             List<ParamSwitcher>? allFns = JsonSerializer.Deserialize<List<ParamSwitcher>>(jsonstring);
-            return allFns.Select(n => Compile($"={n.Name}({secretCharacter})")).ToArray();
+            return allFns.Select(n => Compile($"={n.Name}({secretCharacter})")).Where(n => n.Name != "EVAL").ToArray();
         }
         private void InitializeParamNames() {
             string jsonstring = File.ReadAllText("paramNames.json");
@@ -86,9 +87,10 @@ namespace ExcelProject
                     return LeftOrRight();
                 case "JOBB":
                     return LeftOrRight(false);
+                case "EVAL":
+                    return Evaluate(Parameters["expr"]).ToString();
                 default:
                     throw new Exception("Ezt hogy csináltad, kedves User?!?");
-                    //sima eval?
             }
         }
         private double SumOrAvg(bool sumOnly = true) {
@@ -128,20 +130,25 @@ namespace ExcelProject
             }
             return string.Join(string.Empty, Parameters["Szöveg"].ToList().Skip(Parameters["Szöveg"].Length - int.Parse(Parameters["n"])));
         }
-        //private static double Evaluate(string expression) {
-        //    System.Data.DataTable table = new System.Data.DataTable();
-        //    table.Columns.Add("expression", string.Empty.GetType(), expression);
-        //    System.Data.DataRow row = table.NewRow();
-        //    table.Rows.Add(row);
-        //    return double.Parse((string)row["expression"]);
-        //} -- meg kesobb jol johet, ha megertettem
+        private static double Evaluate(string expression)
+        {
+            System.Data.DataTable table = new System.Data.DataTable();
+            table.Columns.Add("expression", string.Empty.GetType(), expression);
+            System.Data.DataRow row = table.NewRow();
+            table.Rows.Add(row);
+            return double.Parse((string)row["expression"]);
+        }
         public static Function? Compile(string arg) {
             if (arg.Length == 0) return null; // nem feltetlen = vel kezdodik
             try {
-                if (!arg.Contains('(') || arg[^1] != ')') return null;
+                if (!arg.Contains('(') || arg[^1] != ')') {
+                    Evaluate(arg); // hátha hibát dob
+                    return new Function("EVAL", arg);
+                }
                 string[] pcs = string.Join(string.Empty, arg.ToList().Skip(1)).Split('('); // egyenloseg jelet leveszi
                 string _name = pcs[0];
-                string _params = string.Join(string.Empty, pcs[1].Take(pcs[1].Length - 1));
+                string _params = string.Join(string.Empty, string.Join('(', pcs.Skip(1)));
+                _params = _params.Remove(_params.Length - 1);
                 return new Function(_name, _params);
             }
             catch {
