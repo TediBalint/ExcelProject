@@ -101,9 +101,9 @@ namespace ExcelProject {
                     FnPreview = "Hiba";
                 }
                 string? tag = ((TextBox)sender).Tag.ToString();
-                if (tag[0] == '*'  
-
-                ) { // mivan ha ures az ujabb
+                if (tag[0] == '*' &&
+                    SelectedFunction.Parameters.ContainsKey(tag.Replace("*", "") + (AsterixParamCount - 1))
+                ) {
                     paramInputs.RowDefinitions.Add(new RowDefinition());
                     bool pushRow = false;
                     foreach(UIElement obj in paramInputs.Children)

@@ -9,6 +9,7 @@ using System.Text.Json;
 using System.Diagnostics;
 using System.Reflection;
 using System.Windows.Controls;
+using System.Xml.Linq;
 
 namespace ExcelProject
 {
@@ -94,6 +95,19 @@ namespace ExcelProject
             ParameterNames = fn.Values;
             Description = fn.Description;
         }
+        private static int TranslateLettersToIdx(string colName) {
+            int power = 0;
+            double res = 0;
+            foreach (char c in colName.Reverse()) {
+                res += (c + 1 - 'A') * Math.Pow(26, power);
+                power++;
+            }
+            return (int)res - 1;
+        }
+        private static string TranslateIdxToLetters(int idx) {
+            // %26
+            return "";
+        }
         public string Invoke() {
             return Name switch
             {
@@ -109,7 +123,7 @@ namespace ExcelProject
                 "HOL.VAN" => WhereIs().ToString(),
                 "BAL" => LeftOrRight(),
                 "JOBB" => LeftOrRight(false),
-                _ => throw new Exception("Ezt hogy csináltad, kedves User?!?"), // adja vissza csak a nevet?
+                _ => Name,
             };
         }
         private double SumOrAvg(bool sumOnly = true) {
@@ -167,7 +181,7 @@ namespace ExcelProject
                 return new Function(_name, _params);
             }
             catch {
-                return null;
+                return new Function(arg, secretCharacter);
             }
         }
     }
