@@ -88,7 +88,15 @@ namespace ExcelProject {
                     fnValuePreview.Foreground = Brushes.Red;
                     FnPreview = "Hiba";
                 }
-                //finally: myGrid.RowDefinitions.Insert(2, newRow);
+                if (((TextBox)sender).Tag.ToString()[0] == '*') {
+                    paramInputs.RowDefinitions.Add(new RowDefinition());
+                    foreach(UIElement obj in paramInputs.Children)
+                    {
+                        Grid.SetRow(obj, Grid.GetRow(obj) + 1);
+                    }
+                    AsterixParamCount++;
+
+                }
             }
             //Close(); --- teszt
         }

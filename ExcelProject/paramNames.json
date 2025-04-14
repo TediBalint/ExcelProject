@@ -58,10 +58,5 @@
     "Name": "JOBB",
     "Values": [ "Szöveg", "n" ],
     "Description": "Adott számú (n) karaktert ad vissza a szöveg jobb oldaláról"
-  },
-  {
-    "Name": "EVAL",
-    "Values": [ "expr" ],
-    "Description": ""
   }
 ]

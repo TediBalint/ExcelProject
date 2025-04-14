@@ -46,7 +46,7 @@ namespace ExcelProject
                 for (int i = 0; i < paramVals.Count - minus; i++) {
                     try
                     {
-                        string evaluatedParam = Compile(paramVals[i]).Invoke();
+                        string evaluatedParam = evaluateParameter(paramVals[i]);
                         Parameters.Add($"{ParameterNames[0].Replace("*", "")}{i + 1}", evaluatedParam); // tartományt valahogy handle-elni
                     }
                     catch
@@ -64,10 +64,23 @@ namespace ExcelProject
                     throw new Exception("A paraméterek száma nem elegendő");
                 }
                 for (int i = 0; i < paramVals.Count; i++) {
-                    // itt is evalolni! -- akkor ide is try
-                    Parameters.Add(ParameterNames[i], paramVals[i]);
+                    //ide is try
+                    string evaluatedParam = evaluateParameter(paramVals[i]);
+                    Parameters.Add(ParameterNames[i], evaluatedParam);
                 }
             }
+        }
+        private string evaluateParameter(string param)
+        {
+            Function f = Compile(param);
+            string evaluatedParam;
+            if (f != null) evaluatedParam = f.Invoke();
+            else
+            {
+                try { evaluatedParam = Evaluate(param).ToString(); }
+                catch { evaluatedParam = param; }
+            }
+            return evaluatedParam;
         }
         public static Function?[] getAllFunctions() {
             string jsonstring = File.ReadAllText("paramNames.json");
@@ -82,36 +95,22 @@ namespace ExcelProject
             Description = fn.Description;
         }
         public string Invoke() {
-            switch (Name) {
-                case "SZUM":
-                    return SumOrAvg().ToString();
-                case "ÁTLAG":
-                    return SumOrAvg(false).ToString();
-                case "SZUMHA":
-                    return SumIfOrAvgIf().ToString();
-                case "ÁTLAGHA":
-                    return SumIfOrAvgIf(false).ToString();
-                case "DARAB":
-                    return Count().ToString();
-                case "DARABHA":
-                    return CountIf().ToString();
-                case "MAX":
-                    return Extreme().ToString();
-                case "MIN":
-                    return Extreme(false).ToString();
-                case "INDEX":
-                    return Index();
-                case "HOL.VAN":
-                    return WhereIs().ToString();
-                case "BAL":
-                    return LeftOrRight();
-                case "JOBB":
-                    return LeftOrRight(false);
-                case "EVAL":
-                    return Evaluate(Parameters["expr"]).ToString();
-                default:
-                    throw new Exception("Ezt hogy csináltad, kedves User?!?");
-            }
+            return Name switch
+            {
+                "SZUM" => SumOrAvg().ToString(),
+                "ÁTLAG" => SumOrAvg(false).ToString(),
+                "SZUMHA" => SumIfOrAvgIf().ToString(),
+                "ÁTLAGHA" => SumIfOrAvgIf(false).ToString(),
+                "DARAB" => Count().ToString(),
+                "DARABHA" => CountIf().ToString(),
+                "MAX" => Extreme().ToString(),
+                "MIN" => Extreme(false).ToString(),
+                "INDEX" => Index(),
+                "HOL.VAN" => WhereIs().ToString(),
+                "BAL" => LeftOrRight(),
+                "JOBB" => LeftOrRight(false),
+                _ => throw new Exception("Ezt hogy csináltad, kedves User?!?"),
+            };
         }
         private double SumOrAvg(bool sumOnly = true) {
             int sum = 0;
@@ -161,11 +160,6 @@ namespace ExcelProject
         public static Function? Compile(string arg) {
             if (arg.Length == 0) return null;
             try {
-                try
-                {
-                    Evaluate(arg);
-                    return new Function("EVAL", arg);
-                } catch { }
                 string[] pcs = arg.Split('('); 
                 string _name;
                 if (pcs[0][0] == '=') _name = string.Join(string.Empty, pcs[0].ToList().Skip(1));

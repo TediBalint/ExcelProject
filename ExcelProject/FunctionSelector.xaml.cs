@@ -37,8 +37,6 @@ namespace ExcelProject
             SelectedFunction = AllFunctions[0];
             FuncsToShow = AllFunctions;
             DataContext = this;
-            //Function f = Function.Compile("=BAL(ASD;2)");
-            //string s = f.Invoke();
         }
         private void cancel_Click(object sender, RoutedEventArgs e)
         {
