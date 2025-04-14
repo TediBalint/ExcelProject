@@ -109,18 +109,16 @@ namespace ExcelProject
                 "HOL.VAN" => WhereIs().ToString(),
                 "BAL" => LeftOrRight(),
                 "JOBB" => LeftOrRight(false),
-                _ => throw new Exception("Ezt hogy csináltad, kedves User?!?"),
+                _ => throw new Exception("Ezt hogy csináltad, kedves User?!?"), // adja vissza csak a nevet?
             };
         }
         private double SumOrAvg(bool sumOnly = true) {
             int sum = 0;
             int count = 0;
             foreach (var param in Parameters) {
-                try {
-                    sum += int.Parse(param.Value);
-                    count++;
-                }
-                catch { }
+                //ha tartomany?
+                sum += int.Parse(param.Value);
+                count++;
             }
             if (sumOnly) return sum;
             return sum / count;
