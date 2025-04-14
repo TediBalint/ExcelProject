@@ -243,7 +243,10 @@
                 </Border>
 
                 <ComboBox x:Name="functions" Grid.Column="4" Grid.Row="0" Margin="11"/>
-                <Button x:Name="tablestriped" Grid.Column="4" Grid.Row="1" Margin="10" Content="Table Striped"/>
+                <StackPanel Orientation="Horizontal"  Grid.Column="4" Grid.Row="1">
+                    <Button x:Name="tablestriped" Margin="10" Content="Table Striped" Padding="5"/>
+                    <Button x:Name="cellEdit" Grid.Column="4" Grid.Row="1" Margin="10" Content="Cella Formázása" Padding="5" Click="cellEdit_Click"/>
+                </StackPanel>
                 <Label Grid.Column="4" Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Center" Content="Függvények" Margin="0 0 0 5"/>
             </Grid>
 

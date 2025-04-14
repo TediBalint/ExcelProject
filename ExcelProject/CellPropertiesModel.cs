@@ -13,6 +13,8 @@ namespace ExcelProject
 {
     public class CellPropertiesModel: INotifyPropertyChanged
     {
+        public int X { get; set; }
+        public int Y { get; set; }
         private string text;
         public string Text 
         { 
@@ -87,10 +89,12 @@ namespace ExcelProject
             get { return border_Color; }
             set { border_Color = value; OnPropertyChanged(nameof(Border_Color)); }
         }
-        public CellPropertiesModel(bool setValues)
+        public CellPropertiesModel(int x, int y, bool setValues)
         {
             if (setValues)
             {
+                X = x;
+                Y = y;
                 Text = "Default";
                 Font_Size = 16;
                 Width = new GridLength(1, GridUnitType.Star);
@@ -116,6 +120,6 @@ namespace ExcelProject
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 		}
 
-		public event PropertyChangedEventHandler? PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 	}
 }

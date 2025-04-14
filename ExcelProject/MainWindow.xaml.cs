@@ -79,14 +79,14 @@ namespace ExcelProject
                 ObservableCollection<CellPropertiesModel> l = new ObservableCollection<CellPropertiesModel>();
                 for (int j = 0; j < side_length; j++)
                 {
-                    l.Add(new CellPropertiesModel(true));
+                    l.Add(new CellPropertiesModel(j, i, true));
                 }
                 cellPropertiesModels.Add(l);
             }
         }
         private void makeTBXs()
         {
-            CellPropertiesModel model = new CellPropertiesModel(true);
+            CellPropertiesModel model = new CellPropertiesModel(0, 0, true);
             for (int i = 1; i < cellPropertiesModels.Count; i++) 
             {
                 ColumnDefinition column = new ColumnDefinition() {Width = model.Width};
@@ -124,11 +124,11 @@ namespace ExcelProject
 		{
 			if (sender.GetType() != typeof(TextBox)) return;
 			TextBox tbx = (TextBox)sender;
-            if(SelectedCellProperties != null) SelectedCellProperties.Border_Thickness = new Thickness(1);
             int i = int.Parse(tbx.Tag.ToString().Split(';')[0]);
 			int j = int.Parse(tbx.Tag.ToString().Split(';')[1]);
-			SelectedCellProperties = cellPropertiesModels[i][j];
-		    SelectedCellProperties.Border_Thickness = new Thickness(2.5);
+            if (SelectedCellProperties != null) SelectedCellProperties.Border_Thickness = new Thickness(1);
+            SelectedCellProperties = cellPropertiesModels[i][j];
+            SelectedCellProperties.Border_Thickness = new Thickness(2.5);
         }
 		private void bindPropoerty(TextBox tbx, KeyValuePair<DependencyProperty, string> prop, int i, int j)
         {
@@ -208,7 +208,11 @@ namespace ExcelProject
 			if (sender.GetType() != typeof(Button) || SelectedCellProperties == null) return;
 			Button btn = (Button)sender;
 			if (Enum.TryParse(btn.Tag.ToString(), out HorizontalAlignment alignment)) SelectedCellProperties.Horizontal_Content_Align = alignment;
-			
 		}
-	}
+        private void cellEdit_Click(object sender, RoutedEventArgs e)
+        {
+            Window editWindow = new CellEditWindow();
+            editWindow.ShowDialog();
+        }
+    }
 }

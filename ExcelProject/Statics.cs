@@ -33,7 +33,7 @@ namespace ExcelProject
 
 		public static Dictionary<FontStyle, Brush> StyleToBrush = new Dictionary<FontStyle, Brush>()
 		{ {FontStyles.Italic, Brushes.Gray}, {FontStyles.Normal, Brushes.LightGray }};
-
+		
 		public const string FONT_FILE_PATH = "Data/fonts.txt";
 		public const string DEFAULT_FONT_SIZE_FILE_PATH = "Data/default_font_size.txt";
 
