@@ -110,9 +110,12 @@ namespace ExcelProject
 			}
             tbx.Tag = $"{i};{j}";
 			tbx.GotFocus += Tbx_GotFocus;
+            tbx.LostFocus += Tbx_LostFocus;
             tbx.Cursor = Cursors.Cross;
 			table_GRD.Children.Add(tbx);
 		}
+
+
         private void makeBTNs()
         {
             for (int i = 0; i < cellPropertiesModels.Count; i++)
@@ -120,15 +123,21 @@ namespace ExcelProject
 
             }
         }
+        private void Tbx_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (sender.GetType() != typeof(TextBox)) return;
+            TextBox tbx = (TextBox)sender;
+            tbx.BorderThickness = new Thickness(1);
+        }
+        
 		private void Tbx_GotFocus(object sender, RoutedEventArgs e)
 		{
 			if (sender.GetType() != typeof(TextBox)) return;
 			TextBox tbx = (TextBox)sender;
+            tbx.BorderThickness = new Thickness(2.5);
             int i = int.Parse(tbx.Tag.ToString().Split(';')[0]);
-			int j = int.Parse(tbx.Tag.ToString().Split(';')[1]);
-            if (SelectedCellProperties != null) SelectedCellProperties.Border_Thickness = new Thickness(1);
+            int j = int.Parse(tbx.Tag.ToString().Split(';')[1]);
             SelectedCellProperties = cellPropertiesModels[i][j];
-            SelectedCellProperties.Border_Thickness = new Thickness(2.5);
         }
 		private void bindPropoerty(TextBox tbx, KeyValuePair<DependencyProperty, string> prop, int i, int j)
         {
@@ -140,16 +149,6 @@ namespace ExcelProject
 			};
 			tbx.SetBinding(prop.Key, binding);
 		}
-		private void gb_Click(object sender, RoutedEventArgs e)
-		{
-            foreach (ObservableCollection<CellPropertiesModel> item in cellPropertiesModels)
-            {
-                foreach (CellPropertiesModel item1 in item)
-                {
-                    if (item1.Text != "Default") Debug.WriteLine(item1.Text);
-                }
-            }
-        }
 		public void OnPropertyChanged(string name)
         {
 		    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
@@ -211,8 +210,11 @@ namespace ExcelProject
 		}
         private void cellEdit_Click(object sender, RoutedEventArgs e)
         {
-            Window editWindow = new CellEditWindow();
+            if(SelectedCellProperties == null) return;
+            Window editWindow = new CellEditWindow(SelectedCellProperties.Width, SelectedCellProperties.Height);
             editWindow.ShowDialog();
+            if (editWindow.DialogResult == false) return;
+
         }
     }
 }

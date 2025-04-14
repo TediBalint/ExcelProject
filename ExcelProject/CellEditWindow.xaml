@@ -21,14 +21,14 @@
         <Label Grid.Row="0" Grid.Column="0" Content="Cella Szerkesztés" HorizontalAlignment="Center" Grid.ColumnSpan="3" FontSize="24"/>
         <Label Grid.Row="1" Grid.Column="0" Content="Magasság" HorizontalAlignment="Right" VerticalAlignment="Center"/>
         <Label Grid.Row="2" Grid.Column="0" Content="Szélesség" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-        <TextBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" VerticalContentAlignment="Center" FontSize="16" Padding="2" Margin="2 0 10 0"/>
-        <TextBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" VerticalContentAlignment="Center" FontSize="16" Padding="2" Margin="2 0 10 0"/>
-        <ComboBox Grid.Row="1" Grid.Column="2" VerticalAlignment="Center"  FontSize="16" VerticalContentAlignment="Center"/>
-        <ComboBox Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" FontSize="16" VerticalContentAlignment="Center"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding CellEditModell.Height}" VerticalAlignment="Center" VerticalContentAlignment="Center" FontSize="16" Padding="2" Margin="2 0 10 0"/>
+        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding CellEditModell.Width}" VerticalAlignment="Center" VerticalContentAlignment="Center" FontSize="16" Padding="2" Margin="2 0 10 0"/>
+        <ComboBox Grid.Row="1" Grid.Column="2" SelectedItem="{Binding CellEditModell.HeightType}" VerticalAlignment="Center"  FontSize="16" VerticalContentAlignment="Center" ItemsSource="{Binding gridUnitTypes}"/>
+        <ComboBox Grid.Row="2" Grid.Column="2" SelectedItem="{Binding CellEditModell.WidthType}" VerticalAlignment="Center" FontSize="16" VerticalContentAlignment="Center" ItemsSource="{Binding gridUnitTypes}"/>
 
         <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" Grid.ColumnSpan="3" HorizontalAlignment="Center">
-            <Button Width="100" Height="40" Margin="20 0" x:Name="Ok_BTN" Content="Ok"/>
-            <Button Width="100" Height="40" x:Name="Cancel_BTN" Content="Cancel"/>
+            <Button Width="100" Height="40" Margin="20 0" x:Name="Ok_BTN" Content="Ok" Click="Ok_BTN_Click"/>
+            <Button Width="100" Height="40" x:Name="Cancel_BTN" Content="Cancel" Click="Cancel_BTN_Click"/>
         </StackPanel>
     </Grid>
 </Window>

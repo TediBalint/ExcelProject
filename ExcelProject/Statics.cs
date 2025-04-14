@@ -51,6 +51,7 @@ namespace ExcelProject
 			new KeyValuePair<string, Brush>("Piros" ,Brushes.Red),
 			new KeyValuePair<string, Brush>("Kék" ,Brushes.Blue)
 		};
+		public static ObservableCollection<GridUnitType> gridUnitTypes = new ObservableCollection<GridUnitType>() { GridUnitType.Star, GridUnitType.Pixel, };
 	}
 
 		
