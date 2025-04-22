@@ -27,8 +27,6 @@ namespace ExcelProject
             get { return font_Family; }
             set { font_Family = value;OnPropertyChanged(nameof(Font_Family)); } 
         }
-        public GridLength Width { get; set; }
-        public GridLength Height { get; set; }
         private double font_Size;
         public double Font_Size 
         {
@@ -96,10 +94,8 @@ namespace ExcelProject
                 X = x;
                 Y = y;
                 Text = "Default";
-                Font_Size = 16;
-                Width = new GridLength(1, GridUnitType.Star);
+                Font_Size = 16;              
                 Font_Family = new FontFamily("Arial");
-                Height = new GridLength(1, GridUnitType.Star);
                 Font_Weight = FontWeights.Normal;
                 Font_Style = FontStyles.Normal;
                 Text_Decoration = null;

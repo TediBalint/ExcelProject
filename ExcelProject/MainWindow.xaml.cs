@@ -21,26 +21,37 @@ namespace ExcelProject
 	public partial class MainWindow : Window, INotifyPropertyChanged
     {
 		public event PropertyChangedEventHandler? PropertyChanged;
+        public string SaveFormat { get; set; }
 		public ObservableCollection<ObservableCollection<CellPropertiesModel>> cellPropertiesModels { get; set; } = new ObservableCollection<ObservableCollection<CellPropertiesModel>>();
         public ObservableCollection<FontFamily> fontFamilies { get; set; } = new ObservableCollection<FontFamily>();
         public ObservableCollection<KeyValuePair<string, TextDecorationCollection?>> textDecorations { get; set; } = Statics.textDecorations;
-        public ObservableCollection<double> fontSizes { get; set; } = new ObservableCollection<double>();
+        public ObservableCollection<string> saveFormats { get; set; } = Statics.saveFormats;
+		public ObservableCollection<double> fontSizes { get; set; } = new ObservableCollection<double>();
         public CellPropertiesModel? selectedCellProperties { get; set; }
+        private TableLoader loader;
         public CellPropertiesModel? SelectedCellProperties
         {   
             get {return selectedCellProperties;}
             set { selectedCellProperties = value; OnPropertyChanged(nameof(SelectedCellProperties)); }
         }
-        public ObservableCollection<KeyValuePair<string, Brush>> brushes { get; set; } = Statics.foregroundBrushes;
+		public ObservableCollection<KeyValuePair<string, Brush>> brushes { get; set; } = Statics.foregroundBrushes;
 		public MainWindow()
         {
             InitializeComponent();
             DataContext = this;
-            readFontFamilies();
-            readFontSizes();
-            makeList(20);
-            makeTBXs();
+            init();
+            loader = new TableLoader(cellPropertiesModels);
         }
+
+        private void init()
+        {
+			readFontFamilies();
+			readFontSizes();
+			makeList(20);
+            makeBTNs();
+			makeGrid();
+			makeTBXs();
+		}
         
         private void readFontFamilies()
         {
@@ -74,9 +85,9 @@ namespace ExcelProject
         }
         private void makeList(int side_length)
         {
-            for (int i = 0; i < side_length; i++) 
+			for (int i = 0; i < side_length; i++) 
             {
-                ObservableCollection<CellPropertiesModel> l = new ObservableCollection<CellPropertiesModel>();
+				ObservableCollection<CellPropertiesModel> l = new ObservableCollection<CellPropertiesModel>();
                 for (int j = 0; j < side_length; j++)
                 {
                     l.Add(new CellPropertiesModel(j, i, true));
@@ -86,20 +97,27 @@ namespace ExcelProject
         }
         private void makeTBXs()
         {
-            CellPropertiesModel model = new CellPropertiesModel(0, 0, true);
             for (int i = 1; i < cellPropertiesModels.Count; i++) 
             {
-                ColumnDefinition column = new ColumnDefinition() {Width = model.Width};
-                RowDefinition row = new RowDefinition() {Height = model.Height};
-				table_GRD.ColumnDefinitions.Add(column);
-                table_GRD.RowDefinitions.Add(row);
                 for (int j = 1; j < cellPropertiesModels[0].Count; j++) 
                 {
                     makeTbx(i, j);
                 }
             }
         }
-        private void makeTbx(int i, int j)
+        private void makeGrid()
+        {
+            for(int i = 0; i < cellPropertiesModels[0].Count; i++)
+            {
+				ColumnDefinition column = new ColumnDefinition();
+				RowDefinition row = new RowDefinition();
+                row.Height = Statics.DefaultHeight;
+                column.Width = Statics.DefaultWidth;
+				table_GRD.ColumnDefinitions.Add(column);
+				table_GRD.RowDefinitions.Add(row);
+			}
+		}
+		private void makeTbx(int i, int j)
         {
 			TextBox tbx = new TextBox();
             Grid.SetColumn(tbx, j);
@@ -110,25 +128,63 @@ namespace ExcelProject
 			}
             tbx.Tag = $"{i};{j}";
 			tbx.GotFocus += Tbx_GotFocus;
-            tbx.LostFocus += Tbx_LostFocus;
+            //tbx.LostFocus += Tbx_LostFocus;
             tbx.Cursor = Cursors.Cross;
 			table_GRD.Children.Add(tbx);
 		}
-
-
         private void makeBTNs()
         {
-            for (int i = 0; i < cellPropertiesModels.Count; i++)
+            for (int i = 1; i < cellPropertiesModels.Count; i++)
             {
-
-            }
-        }
-        private void Tbx_LostFocus(object sender, RoutedEventArgs e)
+                makeBTN(0, i, i.ToString());
+			}
+			for (int i = 1; i < cellPropertiesModels.Count; i++)
+			{
+                makeBTN(i, 0, i.ToString());
+			}
+            makeBTN(0, 0, "");
+		}
+        private void makeBTN(int i, int j, string content)
         {
-            if (sender.GetType() != typeof(TextBox)) return;
-            TextBox tbx = (TextBox)sender;
-            tbx.BorderThickness = new Thickness(1);
+			Button btn = new Button();
+			Grid.SetColumn(btn, j);
+			Grid.SetRow(btn, i);
+            btn.Content = content;
+			btn.Click += Header_BTN_Click;
+			btn.Tag = $"{i};{j}";
+            btn.HorizontalContentAlignment = HorizontalAlignment.Center;
+            btn.VerticalContentAlignment = VerticalAlignment.Center;
+			table_GRD.Children.Add(btn);
+		}
+
+		private void Header_BTN_Click(object sender, RoutedEventArgs e)
+		{
+            if (sender.GetType() != typeof(Button)) return;
+            Button btn = (Button)sender;
+            int x = int.Parse(btn.Tag.ToString().Split(';')[0]);
+            int y = int.Parse(btn.Tag.ToString().Split(';')[1]);
+            if (x == 0 && y == 0) selectAll();
+            else if(x == 0) selectCol(y);
+            else selectRow(x);
+		}
+        private void selectRow(int y)
+        {
+            Debug.WriteLine($"Selectrow {y}");
         }
+        private void selectCol(int x)
+        {
+			Debug.WriteLine($"Selectcol {x}");
+		}
+		private void selectAll()
+        {
+			Debug.WriteLine($"SelectAll");
+		}
+		//private void Tbx_LostFocus(object sender, RoutedEventArgs e)
+  //      {
+  //          if (sender.GetType() != typeof(TextBox)) return;
+  //          TextBox tbx = (TextBox)sender;
+  //          tbx.BorderThickness = new Thickness(1);
+  //      }
         
 		private void Tbx_GotFocus(object sender, RoutedEventArgs e)
 		{
@@ -137,7 +193,14 @@ namespace ExcelProject
             tbx.BorderThickness = new Thickness(2.5);
             int i = int.Parse(tbx.Tag.ToString().Split(';')[0]);
             int j = int.Parse(tbx.Tag.ToString().Split(';')[1]);
-            SelectedCellProperties = cellPropertiesModels[i][j];
+            if(SelectedCellProperties != null)
+            { 
+                SelectedCellProperties.Border_Thickness = new Thickness(1);
+                SelectedCellProperties.Border_Color = Brushes.Black;
+            }
+
+			SelectedCellProperties = cellPropertiesModels[i][j];
+            SelectedCellProperties.Border_Color = Brushes.CornflowerBlue;
         }
 		private void bindPropoerty(TextBox tbx, KeyValuePair<DependencyProperty, string> prop, int i, int j)
         {
@@ -160,7 +223,6 @@ namespace ExcelProject
             if (SelectedCellProperties.Font_Weight == FontWeights.Bold) SelectedCellProperties.Font_Weight = FontWeights.Normal;
             else SelectedCellProperties.Font_Weight = FontWeights.Bold;
 		}
-
 		private void insertFuncBtn_Click(object sender, RoutedEventArgs e)
 		{
             Window functionselectorWindw = new FunctionSelector();
@@ -211,10 +273,20 @@ namespace ExcelProject
         private void cellEdit_Click(object sender, RoutedEventArgs e)
         {
             if(SelectedCellProperties == null) return;
-            Window editWindow = new CellEditWindow(SelectedCellProperties.Width, SelectedCellProperties.Height);
+            CellEditWindow editWindow = new CellEditWindow(table_GRD.ColumnDefinitions[SelectedCellProperties.X].Width, table_GRD.RowDefinitions[SelectedCellProperties.Y].Height);
             editWindow.ShowDialog();
             if (editWindow.DialogResult == false) return;
+            table_GRD.ColumnDefinitions[SelectedCellProperties.X].Width = new GridLength(double.Parse(editWindow.CellEditModell.Width), editWindow.CellEditModell.WidthType); 
+            table_GRD.RowDefinitions[SelectedCellProperties.Y].Height = new GridLength(double.Parse(editWindow.CellEditModell.Height), editWindow.CellEditModell.HeightType);
+		}
 
-        }
-    }
+		private void save_BTN_Click(object sender, RoutedEventArgs e)
+		{
+            MessageBoxResult result = MessageBox.Show("Biztosan menteni akar? Lehetséges hogy adatok vesznek el.", "Mentés", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+            if (result == MessageBoxResult.Yes) 
+            {
+                loader.Save(SaveFormat);
+            }
+		}
+	}
 }

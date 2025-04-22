@@ -49,8 +49,8 @@
                             <ColumnDefinition Width="2*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Button Content="Mentés" Grid.Column="0" x:Name="save_BTN"/>
-                        <ComboBox  Grid.Column="1" Margin="10 0 0 0" x:Name="saveformat"/>
+                        <Button Content="Mentés" Grid.Column="0" x:Name="save_BTN" Click="save_BTN_Click"/>
+                        <ComboBox VerticalContentAlignment="Center" Grid.Column="1" Margin="10 0 0 0" ItemsSource="{Binding saveFormats}" SelectedItem="{Binding SaveFormat}"/>
                     </Grid>
                 </Border>
                 <Border Style="{StaticResource side_BRD}" Grid.Row="2" Grid.Column="0">

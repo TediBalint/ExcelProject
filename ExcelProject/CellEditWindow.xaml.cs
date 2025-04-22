@@ -44,7 +44,7 @@ namespace ExcelProject
 
         private void Cancel_BTN_Click(object sender, RoutedEventArgs e)
         {
-            DialogResult = true;
+            DialogResult = false;
             Close();
         }
     }
