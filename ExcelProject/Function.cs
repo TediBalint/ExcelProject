@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Windows.Controls;
 using System.Xml.Linq;
+using System.Text.RegularExpressions;
 
 namespace ExcelProject
 {
@@ -101,11 +102,7 @@ namespace ExcelProject
                 res += (c + 1 - 'A') * Math.Pow(26, power);
                 power++;
             }
-            return (int)res - 1;
-        }
-        private static string TranslateIdxToLetters(int idx) {
-            // %26
-            return "";
+            return (int)res;
         }
         private static string RemoveFirstChar(string str) {
             return string.Join(string.Empty, str.ToList().Skip(1));
@@ -127,12 +124,33 @@ namespace ExcelProject
                 _ => Name[0] == '=' ? Evaluate(RemoveFirstChar(Name)).ToString() : Name
             };
         }
+        private (int, int) getCoordsFromText(string text) {
+            int x = TranslateLettersToIdx(new Regex(@"^[A-Z]+").Match(text).ToString());
+            int y = int.Parse(new Regex(@"\d+").Match(text).ToString());
+            return ( x, y );
+        }
         private double SumOrAvg(bool sumOnly = true) {
             double sum = 0;
             int count = 0;
             foreach (var param in Parameters) {
-                //ha tartomany?
-                sum += double.Parse(param.Value);
+                if (Statics.CellCoordRegex.Match(param.Value).Success) {
+                    (int x, int y) = getCoordsFromText(param.Value);
+                    sum += double.Parse(Statics.CellPropertiesModels[y][x].Text);
+                }
+                else if (Statics.CellTerritoryRegex.Match(param.Value).Success) {
+                    string[] startAndEnd = param.Value.Split(":");
+                    (int minx, int miny) = getCoordsFromText(startAndEnd[0]);
+                    (int maxx, int maxy) = getCoordsFromText(startAndEnd[1]);
+                    for(int i = miny; i <= maxy; i++) {
+                        for(int j = minx; j <= maxx; j++) {
+                            sum += double.Parse(Statics.CellPropertiesModels[i][j].Text);
+                            count++;
+                        }
+                    }
+                    count--;
+                    // hibas tartomany thorwoljon
+                }
+                else sum += double.Parse(param.Value);
                 count++;
             }
             if (sumOnly) return sum;
@@ -148,7 +166,27 @@ namespace ExcelProject
             return 0;
         }
         private double Extreme(bool max = true) {
-            return 0;
+            List<double> nums = new();
+            foreach (var param in Parameters) {
+                if (Statics.CellCoordRegex.Match(param.Value).Success) {
+                    (int x, int y) = getCoordsFromText(param.Value);
+                    nums.Add(double.Parse(Statics.CellPropertiesModels[y][x].Text));
+                }
+                else if (Statics.CellTerritoryRegex.Match(param.Value).Success) {
+                    string[] startAndEnd = param.Value.Split(":");
+                    (int minx, int miny) = getCoordsFromText(startAndEnd[0]);
+                    (int maxx, int maxy) = getCoordsFromText(startAndEnd[1]);
+                    for (int i = miny; i <= maxy; i++) {
+                        for (int j = minx; j <= maxx; j++) {
+                            nums.Add(double.Parse(Statics.CellPropertiesModels[i][j].Text));
+                        }
+                    }
+                    // hibas tartomany thorwoljon
+                }
+                else nums.Add(double.Parse(param.Value));
+            }
+            if (max) return nums.Max();
+            return nums.Min();
         }
         private int WhereIs() {
             return 0;
@@ -156,7 +194,7 @@ namespace ExcelProject
         private string Index() {
             return "";
         }
-        private string LeftOrRight(bool left = true) {
+        private string LeftOrRight(bool left = true) { // "
             if(left) {
                 return string.Join(string.Empty, Parameters["Szöveg"].ToList().Take(int.Parse(Parameters["n"])));
             }

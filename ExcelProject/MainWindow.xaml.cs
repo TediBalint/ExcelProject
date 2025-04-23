@@ -22,17 +22,27 @@ namespace ExcelProject
     {
 		public event PropertyChangedEventHandler? PropertyChanged;
         public string SaveFormat { get; set; }
-		public ObservableCollection<ObservableCollection<CellPropertiesModel>> cellPropertiesModels { get; set; } = new ObservableCollection<ObservableCollection<CellPropertiesModel>>();
+		public ObservableCollection<ObservableCollection<CellPropertiesModel>> cellPropertiesModels {
+            get { return Statics.CellPropertiesModels; } 
+            set { Statics.CellPropertiesModels = value;
+                OnPropertyChanged(nameof(cellPropertiesModels));
+            } 
+        } 
         public ObservableCollection<FontFamily> fontFamilies { get; set; } = new ObservableCollection<FontFamily>();
         public ObservableCollection<KeyValuePair<string, TextDecorationCollection?>> textDecorations { get; set; } = Statics.textDecorations;
         public ObservableCollection<string> saveFormats { get; set; } = Statics.saveFormats;
 		public ObservableCollection<double> fontSizes { get; set; } = new ObservableCollection<double>();
         public CellPropertiesModel? selectedCellProperties { get; set; }
+        public bool FnButtonEnabled { get; set; } = false;
         private TableLoader loader;
-        public CellPropertiesModel? SelectedCellProperties
+        public CellPropertiesModel? SelectedCellProperties 
         {   
             get {return selectedCellProperties;}
-            set { selectedCellProperties = value; OnPropertyChanged(nameof(SelectedCellProperties)); }
+            set { selectedCellProperties = value; 
+                  OnPropertyChanged(nameof(SelectedCellProperties));
+                  FnButtonEnabled = SelectedCellProperties != null; // ha null gomb disabled legyen; lostfocus esemeny...
+                  OnPropertyChanged(nameof(FnButtonEnabled));
+            }
         }
 		public ObservableCollection<KeyValuePair<string, Brush>> brushes { get; set; } = Statics.foregroundBrushes;
 		public MainWindow()
@@ -42,7 +52,7 @@ namespace ExcelProject
             init();
             loader = new TableLoader(cellPropertiesModels);
         }
-
+        //CellContentEditor (meg minden textboxnak?) - nak enter esemeny - ott is compile
         private void init()
         {
 			readFontFamilies();
@@ -80,7 +90,7 @@ namespace ExcelProject
         }
 		private void next_Click(object sender, RoutedEventArgs e)
         {
-            FunctionSelector fs = new FunctionSelector();
+            FunctionSelector fs = new FunctionSelector(SelectedCellProperties);
             fs.ShowDialog();
         }
         private void makeList(int side_length)
@@ -129,6 +139,7 @@ namespace ExcelProject
             tbx.Tag = $"{i};{j}";
 			tbx.GotFocus += Tbx_GotFocus;
             //tbx.LostFocus += Tbx_LostFocus;
+            tbx.Text = string.Empty;
             tbx.Cursor = Cursors.Cross;
 			table_GRD.Children.Add(tbx);
 		}
@@ -136,7 +147,7 @@ namespace ExcelProject
         {
             for (int i = 1; i < cellPropertiesModels.Count; i++)
             {
-                makeBTN(0, i, i.ToString());
+                makeBTN(0, i, ((char)('A' - 1 + i)).ToString());
 			}
 			for (int i = 1; i < cellPropertiesModels.Count; i++)
 			{
@@ -225,7 +236,7 @@ namespace ExcelProject
 		}
 		private void insertFuncBtn_Click(object sender, RoutedEventArgs e)
 		{
-            Window functionselectorWindw = new FunctionSelector();
+            Window functionselectorWindw = new FunctionSelector(SelectedCellProperties);
             functionselectorWindw.ShowDialog();
 		}
 

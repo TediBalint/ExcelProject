@@ -279,7 +279,7 @@
                             </Style>
                         </Button.Style>
                     </Button>
-                    <Button Content="fx" x:Name="insertFuncBtn" Click="insertFuncBtn_Click">
+                    <Button Content="fx" x:Name="insertFuncBtn" Click="insertFuncBtn_Click" IsEnabled="{Binding FnButtonEnabled}">
                         <Button.Style>
                             <Style TargetType="Button"  BasedOn="{StaticResource FN_BTN}">
                                 <Style.Triggers>
@@ -293,7 +293,7 @@
                 </StackPanel>
             </Border>
             <Border BorderBrush="Gray" BorderThickness="1">
-                <TextBox VerticalContentAlignment="Center" VerticalAlignment="Stretch" Width="1760" FontSize="24" Text="{Binding SelectedCellProperties.Text, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBox VerticalContentAlignment="Center" VerticalAlignment="Stretch" Width="1760" FontSize="24" Text="{Binding SelectedCellProperties.Text, UpdateSourceTrigger=PropertyChanged}" x:Name="CellContentEditor"/>
             </Border>
             <!--függvényillesztő-->
         </StackPanel>

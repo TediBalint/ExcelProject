@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -25,17 +26,18 @@ namespace ExcelProject
             get { return funcsToShow; }
             set { funcsToShow = value; OnPropertyChanged(nameof(FuncsToShow)); } 
         }
-
+        private CellPropertiesModel? SelectedCellProperties { get; set; }
         private Function _selectedFunction;
         public Function SelectedFunction {
             get { return _selectedFunction; }
             set { _selectedFunction = value; OnPropertyChanged(nameof(SelectedFunction)); }
         }
-        public FunctionSelector()
+        public FunctionSelector(CellPropertiesModel _selected)
         {
             InitializeComponent();
             SelectedFunction = AllFunctions[0];
             FuncsToShow = AllFunctions;
+            SelectedCellProperties = _selected;
             DataContext = this;
             //Function f = Function.Compile("=SZUM(SZUM(1;1);2;1+1)"); // \" a parameterben? - todo
             //string s = f.Invoke();
@@ -57,8 +59,17 @@ namespace ExcelProject
             Hide();
             FunctionEditor fe = new FunctionEditor(SelectedFunction);
             fe.ShowDialog();
-            if (fe.DialogResult != null) {
+            if (fe.DialogResult == true) {
+                try {
+                    SelectedCellProperties.Text = fe.SelectedFunction.Invoke();
+                }
+                catch {
+                    SelectedCellProperties.Text = "#HIBA";
+                }
                 Close();
+            }
+            else {
+                ShowDialog();
             }
         }
     }

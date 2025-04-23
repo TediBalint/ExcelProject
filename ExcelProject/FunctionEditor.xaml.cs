@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,7 @@ namespace ExcelProject {
     /// Interaction logic for FunctionEditor.xaml
     /// </summary>
     public partial class FunctionEditor : Window, INotifyPropertyChanged {
-        private Function SelectedFunction { get; set; }
+        public Function SelectedFunction { get; set; }
         public Dictionary<string, string> BindedParamVals { get; set; } = new();
         private int AsterixParamCount = 1;
         private string _fnPreview;
@@ -84,8 +85,10 @@ namespace ExcelProject {
             Close();
         }
         private void done_Click(object sender, RoutedEventArgs e) {
-            //enteres esemény ide is?
-            //DialogResult = true;
+            SelectedFunction = Function.Compile($"={SelectedFunction.Name.Split('(')[0].Replace("=", "")}({string.Join(';', BindedParamVals.Values)})");
+                //fix empty param
+            DialogResult = true;
+            Close();
         }
         private void textBox_KeyDown(object sender, KeyEventArgs e) {
             if (e.Key == Key.Enter || e.Key == Key.Tab) {
@@ -104,7 +107,6 @@ namespace ExcelProject {
                     BindedParamVals.ContainsKey(tag.Replace("*", "") + (AsterixParamCount - 1))
                 ) {
                     paramInputs.RowDefinitions.Add(new RowDefinition());
-                    bool pushRow = false;
                     foreach(UIElement obj in paramInputs.Children)
                     {
                         if (((Control)obj).Tag.ToString()[0] != '*') Grid.SetRow(obj, Grid.GetRow(obj) + 1);

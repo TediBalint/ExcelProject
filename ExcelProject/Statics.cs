@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -58,7 +59,10 @@ namespace ExcelProject
 		};
 		public static GridLength DefaultHeight = new GridLength(1, GridUnitType.Star);
 		public static GridLength DefaultWidth = new GridLength(1, GridUnitType.Star);
-	}
+		public static Regex CellCoordRegex = new(@"^[A-Z]+\d+$");
+		public static Regex CellTerritoryRegex = new(@"^[A-Z]+\d+:[A-Z]+\d+$");
+        public static ObservableCollection<ObservableCollection<CellPropertiesModel>> CellPropertiesModels = new();
+    }
 
 		
 	
