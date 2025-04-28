@@ -21,6 +21,7 @@ namespace ExcelProject {
     public partial class FunctionEditor : Window, INotifyPropertyChanged {
         public Function SelectedFunction { get; set; }
         public Dictionary<string, string> BindedParamVals { get; set; } = new();
+        private List<string> paramValsInOrder = new();
         private int AsterixParamCount = 1;
         private string _fnPreview;
         public string FnPreview { 
@@ -32,14 +33,12 @@ namespace ExcelProject {
             SelectedFunction = _selectedFunc;
             DataContext = this;
             CreateParamInputFields();
-            //close eventet handleelni kulon? 
         }
         private void CreateParamInputFields() {
             for (int i = 0; i < SelectedFunction.ParameterNames.Length; i++) {
                 RowDefinition rd = new RowDefinition();
                 paramInputs.RowDefinitions.Add(rd);
                 createInputRow(SelectedFunction.ParameterNames[i], i);
-                // harmadik oszlop:preview
             }
         }
         private void createInputRow(string parameterName, int i, bool bold = true)
@@ -86,6 +85,10 @@ namespace ExcelProject {
         }
         private void done_Click(object sender, RoutedEventArgs e) {
             SelectedFunction.Parameters = BindedParamVals;
+            foreach(var tb in paramInputs.Children.OfType<TextBox>()) {
+                paramValsInOrder.Add(tb.Text);
+            }
+            SelectedFunction.raw = '=' + SelectedFunction.Name + '(' + string.Join(';', paramValsInOrder.Where(x=>x!=null)) + ')';
             DialogResult = true;
             Close();
         }
@@ -112,7 +115,6 @@ namespace ExcelProject {
                     createInputRow(tag, AsterixParamCount - 1, false);
                 }
             }
-            //Close(); --- teszt
         }
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged(string tulajdonsagNev) {

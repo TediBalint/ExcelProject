@@ -21,7 +21,7 @@ namespace ExcelProject
         public Dictionary<string, string> Parameters { get; set; }
         public string Description { get; private set; }
         private static readonly string secretCharacter = "🜲";
-        public string raw { get; set; } // bind to tag?
+        public string raw { get; set; }
         private Function(string _name, string _params) {
             Name = _name;
             Parameters = new();
@@ -48,15 +48,14 @@ namespace ExcelProject
                 for (int i = 0; i < paramVals.Count - minus; i++) {
                     try {
                         string evaluatedParam = evaluateParameter(paramVals[i]);
-                        Parameters.Add($"{ParameterNames[0].Replace("*", "")}{i + 1}", evaluatedParam); // tartományt valahogy handle-elni
+                        Parameters.Add($"{ParameterNames[0].Replace("*", "")}{i + 1}", evaluatedParam);
                     }
                     catch {
-                        throw new Exception("A paraméterek száma nem elegendő"); // compile miatt meg egy catch ág?
+                        throw new Exception("A paraméterek száma nem elegendő");
                     }
                 }
                 for (int i = 0; i < minus; i++) {
                     Parameters.Add(ParameterNames[i + 1], paramVals[i + paramVals.Count - minus]);
-                    //itt is kéne hibát dobni
                 }
             }
             else {
@@ -64,7 +63,6 @@ namespace ExcelProject
                     throw new Exception("A paraméterek száma nem elegendő");
                 }
                 for (int i = 0; i < paramVals.Count; i++) {
-                    //ide is try
                     string evaluatedParam = evaluateParameter(paramVals[i]);
                     Parameters.Add(ParameterNames[i], evaluatedParam);
                 }
@@ -264,7 +262,6 @@ namespace ExcelProject
                             nums.Add(double.Parse(Statics.CellPropertiesModels[i][j].Text));
                         }
                     }
-                    // hibas tartomany thorwoljon
                 }
                 else nums.Add(double.Parse(param.Value));
             }

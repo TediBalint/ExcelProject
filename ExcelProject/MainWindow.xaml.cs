@@ -54,7 +54,7 @@ namespace ExcelProject
             get {return selectedCellProperties;}
             set { selectedCellProperties = value; 
                   OnPropertyChanged(nameof(SelectedCellProperties));
-                  FnButtonEnabled = SelectedCellProperties != null; // ha null gomb disabled legyen; lostfocus esemeny...
+                  FnButtonEnabled = SelectedCellProperties != null;
                   OnPropertyChanged(nameof(FnButtonEnabled));
             }
         }
@@ -189,12 +189,14 @@ namespace ExcelProject
         //      }
         private void Tbx_Keypress(object sender, KeyEventArgs e) {
             TextBox tbx = (TextBox)sender;
-            SelectedCellProperties.Raw = tbx.Text;
             if (e.Key == Key.Enter || e.Key == Key.Tab) {
                 try {
                     tbx.Text = Function.Compile(tbx.Text).Invoke();
                 }
                 catch { }
+            }
+            else {
+                SelectedCellProperties.Raw = tbx.Text; // needs test
             }
         }
         private void Tbx_GotFocus(object sender, RoutedEventArgs e)
