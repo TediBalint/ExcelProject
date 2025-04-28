@@ -86,7 +86,6 @@ namespace ExcelProject {
         }
         private void done_Click(object sender, RoutedEventArgs e) {
             SelectedFunction.Parameters = BindedParamVals;
-            //SelectedFunction = Function.Compile($"={SelectedFunction.Name.Split('(')[0].Replace("=", "")}({string.Join(';', BindedParamVals.Values)})");
             DialogResult = true;
             Close();
         }

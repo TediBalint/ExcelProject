@@ -21,7 +21,7 @@ namespace ExcelProject
         public Dictionary<string, string> Parameters { get; set; }
         public string Description { get; private set; }
         private static readonly string secretCharacter = "🜲";
-        public string raw { get; set; }
+        public string raw { get; set; } // bind to tag?
         private Function(string _name, string _params) {
             Name = _name;
             Parameters = new();
@@ -177,7 +177,7 @@ namespace ExcelProject
             double sum = 0;
             int count = 0;
             int terrIdx = 0;
-            if (!Statics.CriteriaRegex.Match(Parameters["Kritérium"]).Success)  throw new Exception("Hibás kritérium");
+            if (!Statics.CriteriaRegex.Match(Parameters["Kritérium"]).Success)  throw new Exception("#Hibás kritérium");
             string sumTerritory;
             try { sumTerritory = Parameters["Összeg_Tartomány"]; }
             catch { sumTerritory = Parameters["Átlag_Tartomány"]; }
@@ -204,7 +204,7 @@ namespace ExcelProject
                     if (maxy - miny >= 1) terrIdx++;
                 }
             }
-            else throw new Exception("Hibás tartományhivatkozás");
+            else throw new Exception("#Hibás tartományhivatkozás");
             if (sumOnly) return sum;
             return sum / count;
         }
@@ -229,7 +229,7 @@ namespace ExcelProject
         }
         private int CountIf() {
             int count = 0;
-            if (!Statics.CriteriaRegex.Match(Parameters["Kritérium"]).Success) throw new Exception("Hibás kritérium");
+            if (!Statics.CriteriaRegex.Match(Parameters["Kritérium"]).Success) throw new Exception("#Hibás kritérium");
             if (Statics.CellTerritoryRegex.Match(Parameters["Tartomány"]).Success) {
                 string[] startAndEnd = Parameters["Tartomány"].Split(":");
                 (int minx, int miny) = getCoordsFromText(startAndEnd[0]);
@@ -240,7 +240,7 @@ namespace ExcelProject
                     }
                 }
             }
-            else throw new Exception("Hibás tartományhivatkozás");
+            else throw new Exception("#Hibás tartományhivatkozás");
             return count;
         }
         private double Extreme(bool max = true) {
@@ -267,9 +267,21 @@ namespace ExcelProject
             return nums.Min();
         }
         private int WhereIs() {
-            return 0;
+            if (Statics.CellTerritoryRegex.Match(Parameters["Tartomány"]).Success) {
+                string[] startAndEnd = Parameters["Tartomány"].Split(":");
+                (int minx, int miny) = getCoordsFromText(startAndEnd[0]);
+                (int maxx, int maxy) = getCoordsFromText(startAndEnd[1]);
+                for (int i = miny; i <= maxy; i++) {
+                    for (int j = minx; j <= maxx; j++) {
+                        if (Statics.CellPropertiesModels[i][j].Text == Parameters["Érték"]) return i + 1 - minx; // sorba is mukodjon
+                    }
+                }
+                throw new Exception("#A keresett érték nem található");
+            }
+            else throw new Exception("#Hibás tartományhivatkozás");
         }
         private string Index() {
+            // "Values": [ "Index", "Tartomány" ],
             return "";
         }
         private string LeftOrRight(bool left = true) { // "

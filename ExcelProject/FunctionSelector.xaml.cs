@@ -63,8 +63,9 @@ namespace ExcelProject
                 try {
                     SelectedCellProperties.Text = fe.SelectedFunction.Invoke();
                 }
-                catch {
-                    SelectedCellProperties.Text = "#HIBA";
+                catch (Exception err) {
+                    if (err.Message[0] == '#') SelectedCellProperties.Text = err.Message;
+                    else SelectedCellProperties.Text = "#Hiányzó paraméter";
                 }
                 Close();
             }
