@@ -65,8 +65,8 @@ namespace ExcelProject
             DataContext = this;
             init();
             loader = new TableLoader(cellPropertiesModels);
+            CellContentEditor.KeyDown += CellEditorOnEnter;
         }
-        //CellContentEditor (meg minden textboxnak?) - nak enter esemeny - ott is compile
         private void init()
         {
 			readFontFamilies();
@@ -152,7 +152,7 @@ namespace ExcelProject
 			}
             tbx.Tag = $"{i};{j}";
 			tbx.GotFocus += Tbx_GotFocus;
-			tbx.KeyDown += Tbx_Keypress;
+			tbx.KeyUp += Tbx_Keypress;
             //tbx.LostFocus += Tbx_LostFocus;
             tbx.Text = string.Empty;
             tbx.Cursor = Cursors.Cross;
@@ -188,15 +188,16 @@ namespace ExcelProject
         //          tbx.BorderThickness = new Thickness(1);
         //      }
         private void Tbx_Keypress(object sender, KeyEventArgs e) {
+            TextBox tbx = (TextBox)sender;
+            SelectedCellProperties.Raw = tbx.Text;
             if (e.Key == Key.Enter || e.Key == Key.Tab) {
-                TextBox tbx = (TextBox)sender;
                 try {
                     tbx.Text = Function.Compile(tbx.Text).Invoke();
                 }
                 catch { }
             }
         }
-		private void Tbx_GotFocus(object sender, RoutedEventArgs e)
+        private void Tbx_GotFocus(object sender, RoutedEventArgs e)
 		{
 			if (sender.GetType() != typeof(TextBox)) return;
 			TextBox tbx = (TextBox)sender;
@@ -217,8 +218,19 @@ namespace ExcelProject
             }
 			SelectedCellProperties = cellPropertiesModels[i][j];
             SelectedCellProperties.Border_Color = Brushes.CornflowerBlue;
+            if (SelectedCellProperties.Raw == "") SelectedCellProperties.Raw = SelectedCellProperties.Text;
         }
-		private void bindPropoerty(TextBox tbx, KeyValuePair<DependencyProperty, string> prop, int i, int j)
+        private void CellEditorOnEnter(object sender, KeyEventArgs e) {
+            if (e.Key == Key.Enter || e.Key == Key.Tab) {
+                try {
+                    SelectedCellProperties.Text = Function.Compile(SelectedCellProperties.Raw).Invoke();
+                }
+                catch {
+                    SelectedCellProperties.Text = SelectedCellProperties.Raw;
+                }
+            }
+        }
+        private void bindPropoerty(TextBox tbx, KeyValuePair<DependencyProperty, string> prop, int i, int j)
         {
 			Binding binding = new Binding(prop.Value)
 			{

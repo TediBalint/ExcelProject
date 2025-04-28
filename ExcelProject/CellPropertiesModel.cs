@@ -21,6 +21,11 @@ namespace ExcelProject
             get { return text; } 
             set { text = value; OnPropertyChanged(nameof(Text));}
         }
+        private string raw;
+        public string Raw {
+            get { return raw; }
+            set { raw = value; OnPropertyChanged(nameof(Raw)); }
+        }
         private FontFamily font_Family;
         public FontFamily Font_Family 
         { 

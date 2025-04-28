@@ -304,7 +304,7 @@
                 </StackPanel>
             </Border>
             <Border BorderBrush="Gray" BorderThickness="1">
-                <TextBox IsEnabled="{Binding FnButtonEnabled}" VerticalContentAlignment="Center" VerticalAlignment="Stretch" Width="1760" FontSize="24" Text="{Binding SelectedCellProperties.Text, UpdateSourceTrigger=PropertyChanged}" x:Name="CellContentEditor"/>
+                <TextBox IsEnabled="{Binding FnButtonEnabled}" VerticalContentAlignment="Center" VerticalAlignment="Stretch" Width="1760" FontSize="24" Text="{Binding SelectedCellProperties.Raw, UpdateSourceTrigger=PropertyChanged}" x:Name="CellContentEditor"/>
             </Border>
             <!--függvényillesztő-->
         </StackPanel>
