@@ -61,6 +61,7 @@ namespace ExcelProject
 		public static GridLength DefaultWidth = new GridLength(1, GridUnitType.Star);
 		public static Regex CellCoordRegex = new(@"^[A-Z]+\d+$");
 		public static Regex CellTerritoryRegex = new(@"^[A-Z]+\d+:[A-Z]+\d+$");
+		public static Regex CriteriaRegex = new(@"^(>|<|<>|!=|<=|>=)?\d+$");
         public static ObservableCollection<ObservableCollection<CellPropertiesModel>> CellPropertiesModels = new();
     }
 

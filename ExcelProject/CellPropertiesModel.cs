@@ -93,7 +93,7 @@ namespace ExcelProject
             {
                 X = x;
                 Y = y;
-                Text = "Default";
+                Text = "";
                 Font_Size = 16;              
                 Font_Family = new FontFamily("Arial");
                 Font_Weight = FontWeights.Normal;

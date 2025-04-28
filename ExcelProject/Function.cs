@@ -20,6 +20,7 @@ namespace ExcelProject
         public Dictionary<string, string> Parameters { get; set; }
         public string Description { get; private set; }
         private static readonly string secretCharacter = "🜲";
+        public string raw { get; set; }
         private Function(string _name, string _params) {
             Name = _name;
             Parameters = new();
@@ -129,6 +130,20 @@ namespace ExcelProject
             int y = int.Parse(new Regex(@"\d+").Match(text).ToString());
             return ( x, y );
         }
+        private bool FitsCriteria(double n, string crit)
+        {
+            if (crit[0] == '>') { 
+                if (crit[1] == '=') return n >= int.Parse(RemoveFirstChar(RemoveFirstChar(crit)));
+                else return n > int.Parse(RemoveFirstChar(crit));
+            }
+            if (crit[0] == '<') { 
+                if (crit[1] == '>') return n != int.Parse(RemoveFirstChar(RemoveFirstChar(crit)));
+                if (crit[1] == '=') return n <= int.Parse(RemoveFirstChar(RemoveFirstChar(crit)));
+                else return n < int.Parse(RemoveFirstChar(crit));
+            }
+            if (crit[0] == '!') return n != int.Parse(RemoveFirstChar(RemoveFirstChar(crit)));
+            else return n == int.Parse(crit);
+        }
         private double SumOrAvg(bool sumOnly = true) {
             double sum = 0;
             int count = 0;
@@ -157,7 +172,70 @@ namespace ExcelProject
             return sum / count;
         }
         private double SumIfOrAvgIf(bool sumOnly = true) {
-            return 0;
+            double sum = 0;
+            int count = 0;
+            int terrIdx = 0;
+            if (!Statics.CriteriaRegex.Match(Parameters["Kritérium"]).Success)
+            {
+                throw new Exception("Hibás kritérium");
+            }
+            string[] territoryStartAndEnd = Parameters["Tartomány"].Split(":");
+            (int terrx, int terry) = getCoordsFromText(territoryStartAndEnd[0]);
+            (int _tx, _) = getCoordsFromText(territoryStartAndEnd[1]);
+            bool isColumn = terrx - _tx == 0;
+            //szamossag nem egyezik meg akk throwoljon
+            foreach (var param in Parameters)
+            {
+                if (param.Key.StartsWith("Szám", StringComparison.Ordinal))
+                {
+                    double CriteriaNumber;
+                    if (!isColumn) CriteriaNumber = double.Parse(Statics.CellPropertiesModels[terry][terrx + terrIdx].Text);
+                    else CriteriaNumber = double.Parse(Statics.CellPropertiesModels[terry + terrIdx][terrx].Text);
+                    if (Statics.CellCoordRegex.Match(param.Value).Success)
+                    {
+                        (int x, int y) = getCoordsFromText(param.Value);
+                        if (FitsCriteria(CriteriaNumber, Parameters["Kritérium"]))
+                        {
+                            sum += double.Parse(Statics.CellPropertiesModels[y][x].Text);
+                            count++;
+                        }
+                        terrIdx++;
+                    }
+                    else if (Statics.CellTerritoryRegex.Match(param.Value).Success)
+                    {
+                        string[] startAndEnd = param.Value.Split(":");
+                        (int minx, int miny) = getCoordsFromText(startAndEnd[0]);
+                        (int maxx, int maxy) = getCoordsFromText(startAndEnd[1]);
+                        for (int i = miny; i <= maxy; i++)
+                        {
+                            for (int j = minx; j <= maxx; j++)
+                            {
+                                if (!isColumn) CriteriaNumber = double.Parse(Statics.CellPropertiesModels[terry][terrx + terrIdx].Text);
+                                else CriteriaNumber = double.Parse(Statics.CellPropertiesModels[terry + terrIdx][terrx].Text);
+                                if (FitsCriteria(CriteriaNumber, Parameters["Kritérium"]))
+                                {
+                                    sum += double.Parse(Statics.CellPropertiesModels[i][j].Text);
+                                    count++;
+                                }
+                                if (maxx - minx >= 1) terrIdx++;
+                            }
+                            if (maxy - miny >= 1) terrIdx++;
+                        }
+                        // hibas tartomany thorwoljon
+                    }
+                    else {
+                        if (FitsCriteria(CriteriaNumber, Parameters["Kritérium"]))
+                        {
+                            sum += double.Parse(param.Value);
+                            count++;
+                        }
+                        terrIdx++;
+
+                    }
+                }
+            }
+            if (sumOnly) return sum;
+            return sum / count;
         }
         private int Count() {
             return 0;
