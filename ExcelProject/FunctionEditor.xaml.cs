@@ -85,8 +85,8 @@ namespace ExcelProject {
             Close();
         }
         private void done_Click(object sender, RoutedEventArgs e) {
-            SelectedFunction = Function.Compile($"={SelectedFunction.Name.Split('(')[0].Replace("=", "")}({string.Join(';', BindedParamVals.Values)})");
-                //fix empty param
+            SelectedFunction.Parameters = BindedParamVals;
+            //SelectedFunction = Function.Compile($"={SelectedFunction.Name.Split('(')[0].Replace("=", "")}({string.Join(';', BindedParamVals.Values)})");
             DialogResult = true;
             Close();
         }
@@ -94,8 +94,7 @@ namespace ExcelProject {
             if (e.Key == Key.Enter || e.Key == Key.Tab) {
                 try {
                     fnValuePreview.Foreground = Brushes.Black;
-                    SelectedFunction = Function.Compile($"={SelectedFunction.Name.Split('(')[0].Replace("=", "")}({string.Join(';', BindedParamVals.Values)})");
-                    //fix empty param
+                    SelectedFunction.Parameters = BindedParamVals;
                     FnPreview = SelectedFunction.Invoke();
                 }
                 catch {

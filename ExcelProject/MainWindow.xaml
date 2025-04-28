@@ -267,7 +267,7 @@
                             <Setter Property="Height" Value="60"/>
                         </Style>
                     </StackPanel.Resources>
-                    <Button Content="X">
+                    <Button Content="X" x:Name="clearCellBtn" Click="clearCellBtn_Click">
                         <Button.Style>
                             <Style TargetType="Button"  BasedOn="{StaticResource FN_BTN}">
                                 <Style.Triggers>

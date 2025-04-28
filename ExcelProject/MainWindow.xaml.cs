@@ -299,5 +299,9 @@ namespace ExcelProject
                 loader.Save(SaveFormat);
             }
 		}
-	}
+
+        private void clearCellBtn_Click(object sender, RoutedEventArgs e) {
+            selectedCellProperties.Text = "";
+        }
+    }
 }

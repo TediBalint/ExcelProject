@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Windows.Controls;
 using System.Xml.Linq;
 using System.Text.RegularExpressions;
+using System.Data.Common;
 
 namespace ExcelProject
 {
@@ -29,8 +30,7 @@ namespace ExcelProject
             List<string> paramVals = new();
             bool readyToSplit = true;
             int lastIdx = 0;
-            for (int i = 0; i < _params.Length;i++)
-            {
+            for (int i = 0; i < _params.Length; i++) {
                 if (_params[i] == '(') {
                     readyToSplit = false;
                 }
@@ -38,22 +38,19 @@ namespace ExcelProject
                     paramVals.Add(_params.Substring(lastIdx, i - lastIdx));
                     lastIdx = i + 1;
                 }
-                else if(_params[i] == ')')
-                {
+                else if (_params[i] == ')') {
                     readyToSplit = true;
                 }
             }
             paramVals.Add(_params.Substring(lastIdx, _params.Length - lastIdx));
-            if (ParameterNames[0].StartsWith("*")) { 
+            if (ParameterNames[0].StartsWith("*")) {
                 int minus = ParameterNames.Length - 1;
                 for (int i = 0; i < paramVals.Count - minus; i++) {
-                    try
-                    {
+                    try {
                         string evaluatedParam = evaluateParameter(paramVals[i]);
                         Parameters.Add($"{ParameterNames[0].Replace("*", "")}{i + 1}", evaluatedParam); // tartományt valahogy handle-elni
                     }
-                    catch
-                    {
+                    catch {
                         throw new Exception("A paraméterek száma nem elegendő"); // compile miatt meg egy catch ág?
                     }
                 }
@@ -73,8 +70,7 @@ namespace ExcelProject
                 }
             }
         }
-        private string evaluateParameter(string param)
-        {
+        private string evaluateParameter(string param) {
             Function f = Compile(param);
             string evaluatedParam;
             try { evaluatedParam = Evaluate(param).ToString(); }
@@ -128,21 +124,28 @@ namespace ExcelProject
         private (int, int) getCoordsFromText(string text) {
             int x = TranslateLettersToIdx(new Regex(@"^[A-Z]+").Match(text).ToString());
             int y = int.Parse(new Regex(@"\d+").Match(text).ToString());
-            return ( x, y );
+            return (x, y);
         }
-        private bool FitsCriteria(double n, string crit)
-        {
-            if (crit[0] == '>') { 
-                if (crit[1] == '=') return n >= int.Parse(RemoveFirstChar(RemoveFirstChar(crit)));
-                else return n > int.Parse(RemoveFirstChar(crit));
+        private bool FitsCriteria(string inp, string crit) {
+            try {
+                double n;
+                n = double.Parse(inp);
+                if (crit[0] == '>') {
+                    if (crit[1] == '=') return n >= int.Parse(RemoveFirstChar(RemoveFirstChar(crit)));
+                    else return n > int.Parse(RemoveFirstChar(crit));
+                }
+                if (crit[0] == '<') {
+                    if (crit[1] == '>') return n != int.Parse(RemoveFirstChar(RemoveFirstChar(crit)));
+                    if (crit[1] == '=') return n <= int.Parse(RemoveFirstChar(RemoveFirstChar(crit)));
+                    else return n < int.Parse(RemoveFirstChar(crit));
+                }
+                if (crit[0] == '!') return n != int.Parse(RemoveFirstChar(RemoveFirstChar(crit)));
+                else return n == int.Parse(crit);
             }
-            if (crit[0] == '<') { 
-                if (crit[1] == '>') return n != int.Parse(RemoveFirstChar(RemoveFirstChar(crit)));
-                if (crit[1] == '=') return n <= int.Parse(RemoveFirstChar(RemoveFirstChar(crit)));
-                else return n < int.Parse(RemoveFirstChar(crit));
+            catch {
+                if ((crit[0] == '<' && crit[1] == '>') || (crit[0] == '!' && crit[1] == '=')) return inp != crit;
+                return inp == crit; 
             }
-            if (crit[0] == '!') return n != int.Parse(RemoveFirstChar(RemoveFirstChar(crit)));
-            else return n == int.Parse(crit);
         }
         private double SumOrAvg(bool sumOnly = true) {
             double sum = 0;
@@ -156,14 +159,13 @@ namespace ExcelProject
                     string[] startAndEnd = param.Value.Split(":");
                     (int minx, int miny) = getCoordsFromText(startAndEnd[0]);
                     (int maxx, int maxy) = getCoordsFromText(startAndEnd[1]);
-                    for(int i = miny; i <= maxy; i++) {
-                        for(int j = minx; j <= maxx; j++) {
+                    for (int i = miny; i <= maxy; i++) {
+                        for (int j = minx; j <= maxx; j++) {
                             sum += double.Parse(Statics.CellPropertiesModels[i][j].Text);
                             count++;
                         }
                     }
                     count--;
-                    // hibas tartomany thorwoljon
                 }
                 else sum += double.Parse(param.Value);
                 count++;
@@ -175,73 +177,71 @@ namespace ExcelProject
             double sum = 0;
             int count = 0;
             int terrIdx = 0;
-            if (!Statics.CriteriaRegex.Match(Parameters["Kritérium"]).Success)
-            {
-                throw new Exception("Hibás kritérium");
-            }
-            string[] territoryStartAndEnd = Parameters["Tartomány"].Split(":");
-            (int terrx, int terry) = getCoordsFromText(territoryStartAndEnd[0]);
-            (int _tx, _) = getCoordsFromText(territoryStartAndEnd[1]);
-            bool isColumn = terrx - _tx == 0;
-            //szamossag nem egyezik meg akk throwoljon
-            foreach (var param in Parameters)
-            {
-                if (param.Key.StartsWith("Szám", StringComparison.Ordinal))
-                {
-                    double CriteriaNumber;
-                    if (!isColumn) CriteriaNumber = double.Parse(Statics.CellPropertiesModels[terry][terrx + terrIdx].Text);
-                    else CriteriaNumber = double.Parse(Statics.CellPropertiesModels[terry + terrIdx][terrx].Text);
-                    if (Statics.CellCoordRegex.Match(param.Value).Success)
-                    {
-                        (int x, int y) = getCoordsFromText(param.Value);
-                        if (FitsCriteria(CriteriaNumber, Parameters["Kritérium"]))
-                        {
-                            sum += double.Parse(Statics.CellPropertiesModels[y][x].Text);
+            if (!Statics.CriteriaRegex.Match(Parameters["Kritérium"]).Success)  throw new Exception("Hibás kritérium");
+            string sumTerritory;
+            try { sumTerritory = Parameters["Összeg_Tartomány"]; }
+            catch { sumTerritory = Parameters["Átlag_Tartomány"]; }
+            string CriteriaNumber;
+            if (Statics.CellTerritoryRegex.Match(sumTerritory).Success && Statics.CellTerritoryRegex.Match(Parameters["Tartomány"]).Success) {
+                string[] territoryStartAndEnd = Parameters["Tartomány"].Split(":");
+                (int terrx, int terry) = getCoordsFromText(territoryStartAndEnd[0]);
+                (int _tx, _) = getCoordsFromText(territoryStartAndEnd[1]);
+                bool isColumn = terrx - _tx == 0;
+                //szamossag nem egyezik meg akk throwoljon
+                string[] startAndEnd = sumTerritory.Split(":");
+                (int minx, int miny) = getCoordsFromText(startAndEnd[0]);
+                (int maxx, int maxy) = getCoordsFromText(startAndEnd[1]);
+                for (int i = miny; i <= maxy; i++) {
+                    for (int j = minx; j <= maxx; j++) {
+                        if (!isColumn) CriteriaNumber = Statics.CellPropertiesModels[terry][terrx + terrIdx].Text;
+                        else CriteriaNumber = Statics.CellPropertiesModels[terry + terrIdx][terrx].Text;
+                        if (FitsCriteria(CriteriaNumber, Parameters["Kritérium"])) {
+                            sum += double.Parse(Statics.CellPropertiesModels[i][j].Text);
                             count++;
                         }
-                        terrIdx++;
+                        if (maxx - minx >= 1) terrIdx++;
                     }
-                    else if (Statics.CellTerritoryRegex.Match(param.Value).Success)
-                    {
-                        string[] startAndEnd = param.Value.Split(":");
-                        (int minx, int miny) = getCoordsFromText(startAndEnd[0]);
-                        (int maxx, int maxy) = getCoordsFromText(startAndEnd[1]);
-                        for (int i = miny; i <= maxy; i++)
-                        {
-                            for (int j = minx; j <= maxx; j++)
-                            {
-                                if (!isColumn) CriteriaNumber = double.Parse(Statics.CellPropertiesModels[terry][terrx + terrIdx].Text);
-                                else CriteriaNumber = double.Parse(Statics.CellPropertiesModels[terry + terrIdx][terrx].Text);
-                                if (FitsCriteria(CriteriaNumber, Parameters["Kritérium"]))
-                                {
-                                    sum += double.Parse(Statics.CellPropertiesModels[i][j].Text);
-                                    count++;
-                                }
-                                if (maxx - minx >= 1) terrIdx++;
-                            }
-                            if (maxy - miny >= 1) terrIdx++;
-                        }
-                        // hibas tartomany thorwoljon
-                    }
-                    else {
-                        if (FitsCriteria(CriteriaNumber, Parameters["Kritérium"]))
-                        {
-                            sum += double.Parse(param.Value);
-                            count++;
-                        }
-                        terrIdx++;
-
-                    }
+                    if (maxy - miny >= 1) terrIdx++;
                 }
             }
+            else throw new Exception("Hibás tartományhivatkozás");
             if (sumOnly) return sum;
             return sum / count;
         }
         private int Count() {
-            return 0;
+            int count = 0;
+            if (Statics.CellTerritoryRegex.Match(Parameters["Tartomány"]).Success) {
+                string[] startAndEnd = Parameters["Tartomány"].Split(":");
+                (int minx, int miny) = getCoordsFromText(startAndEnd[0]);
+                (int maxx, int maxy) = getCoordsFromText(startAndEnd[1]);
+                for (int i = miny; i <= maxy; i++) {
+                    for (int j = minx; j <= maxx; j++) {
+                        try {
+                            _ = double.Parse(Statics.CellPropertiesModels[i][j].Text);
+                            count++;
+                        }
+                        catch { }
+                    }
+                }
+            }
+            else throw new Exception("Hibás tartományhivatkozás");
+            return count;
         }
         private int CountIf() {
-            return 0;
+            int count = 0;
+            if (!Statics.CriteriaRegex.Match(Parameters["Kritérium"]).Success) throw new Exception("Hibás kritérium");
+            if (Statics.CellTerritoryRegex.Match(Parameters["Tartomány"]).Success) {
+                string[] startAndEnd = Parameters["Tartomány"].Split(":");
+                (int minx, int miny) = getCoordsFromText(startAndEnd[0]);
+                (int maxx, int maxy) = getCoordsFromText(startAndEnd[1]);
+                for (int i = miny; i <= maxy; i++) {
+                    for (int j = minx; j <= maxx; j++) {
+                        if (FitsCriteria(Statics.CellPropertiesModels[i][j].Text, Parameters["Kritérium"])) count++;
+                    }
+                }
+            }
+            else throw new Exception("Hibás tartományhivatkozás");
+            return count;
         }
         private double Extreme(bool max = true) {
             List<double> nums = new();
@@ -294,7 +294,9 @@ namespace ExcelProject
                 else _name = pcs[0];
                 string _params = string.Join(string.Empty, string.Join('(', pcs.Skip(1)));
                 _params = _params.Remove(_params.Length - 1);
-                return new Function(_name, _params);
+                Function f = new Function(_name, _params);
+                f.raw = arg;
+                return f;
             }
             catch {
                 return new Function(arg, secretCharacter);
