@@ -159,6 +159,7 @@ namespace ExcelProject
                     string[] startAndEnd = param.Value.Split(":");
                     (int minx, int miny) = getCoordsFromText(startAndEnd[0]);
                     (int maxx, int maxy) = getCoordsFromText(startAndEnd[1]);
+                    if ((maxy - miny) < 0 || (maxx - minx) < 0) throw new Exception("#Hibás tartomány");
                     for (int i = miny; i <= maxy; i++) {
                         for (int j = minx; j <= maxx; j++) {
                             sum += double.Parse(Statics.CellPropertiesModels[i][j].Text);
@@ -191,6 +192,7 @@ namespace ExcelProject
                 string[] startAndEnd = sumTerritory.Split(":");
                 (int minx, int miny) = getCoordsFromText(startAndEnd[0]);
                 (int maxx, int maxy) = getCoordsFromText(startAndEnd[1]);
+                if ((maxy - miny) < 0 || (maxx - minx) < 0) throw new Exception("#Hibás tartomány");
                 for (int i = miny; i <= maxy; i++) {
                     for (int j = minx; j <= maxx; j++) {
                         if (!isColumn) CriteriaNumber = Statics.CellPropertiesModels[terry][terrx + terrIdx].Text;
@@ -214,6 +216,7 @@ namespace ExcelProject
                 string[] startAndEnd = Parameters["Tartomány"].Split(":");
                 (int minx, int miny) = getCoordsFromText(startAndEnd[0]);
                 (int maxx, int maxy) = getCoordsFromText(startAndEnd[1]);
+                if ((maxy - miny) < 0 || (maxx - minx) < 0) throw new Exception("#Hibás tartomány");
                 for (int i = miny; i <= maxy; i++) {
                     for (int j = minx; j <= maxx; j++) {
                         try {
@@ -234,6 +237,7 @@ namespace ExcelProject
                 string[] startAndEnd = Parameters["Tartomány"].Split(":");
                 (int minx, int miny) = getCoordsFromText(startAndEnd[0]);
                 (int maxx, int maxy) = getCoordsFromText(startAndEnd[1]);
+                if ((maxy - miny) < 0 || (maxx - minx) < 0) throw new Exception("#Hibás tartomány");
                 for (int i = miny; i <= maxy; i++) {
                     for (int j = minx; j <= maxx; j++) {
                         if (FitsCriteria(Statics.CellPropertiesModels[i][j].Text, Parameters["Kritérium"])) count++;
@@ -254,6 +258,7 @@ namespace ExcelProject
                     string[] startAndEnd = param.Value.Split(":");
                     (int minx, int miny) = getCoordsFromText(startAndEnd[0]);
                     (int maxx, int maxy) = getCoordsFromText(startAndEnd[1]);
+                    if ((maxy - miny) < 0 || (maxx - minx) < 0) throw new Exception("#Hibás tartomány");
                     for (int i = miny; i <= maxy; i++) {
                         for (int j = minx; j <= maxx; j++) {
                             nums.Add(double.Parse(Statics.CellPropertiesModels[i][j].Text));
@@ -271,9 +276,16 @@ namespace ExcelProject
                 string[] startAndEnd = Parameters["Tartomány"].Split(":");
                 (int minx, int miny) = getCoordsFromText(startAndEnd[0]);
                 (int maxx, int maxy) = getCoordsFromText(startAndEnd[1]);
+                if ((maxy - miny) < 0 || (maxx - minx) < 0) throw new Exception("#Hibás tartomány");
+                bool isColumn = maxx - minx == 0;
+                bool isRow = maxy - miny == 0;
+                if (!isColumn && !isRow) throw new Exception("#Tartomány csak egy sor vagy egy oszlop lehet");
                 for (int i = miny; i <= maxy; i++) {
                     for (int j = minx; j <= maxx; j++) {
-                        if (Statics.CellPropertiesModels[i][j].Text == Parameters["Érték"]) return i + 1 - minx; // sorba is mukodjon
+                        if (Statics.CellPropertiesModels[i][j].Text == Parameters["Érték"]) { 
+                            if (isColumn) return i + 1 - miny;
+                            else return j + 1 - minx;
+                        }
                     }
                 }
                 throw new Exception("#A keresett érték nem található");
@@ -281,8 +293,18 @@ namespace ExcelProject
             else throw new Exception("#Hibás tartományhivatkozás");
         }
         private string Index() {
-            // "Values": [ "Index", "Tartomány" ],
-            return "";
+            if (Statics.CellTerritoryRegex.Match(Parameters["Tartomány"]).Success) {
+                string[] startAndEnd = Parameters["Tartomány"].Split(":");
+                (int minx, int miny) = getCoordsFromText(startAndEnd[0]);
+                (int maxx, int maxy) = getCoordsFromText(startAndEnd[1]);
+                if ((maxy - miny) < 0 || (maxx - minx) < 0) throw new Exception("#Hibás tartomány");
+                bool isColumn = maxx - minx == 0;
+                bool isRow = maxy - miny == 0;
+                if (!isColumn && !isRow) throw new Exception("#Tartomány csak egy sor vagy egy oszlop lehet");
+                if (isRow) return Statics.CellPropertiesModels[miny][minx + int.Parse(Parameters["Index"]) - 1].Text;
+                return Statics.CellPropertiesModels[miny + int.Parse(Parameters["Index"]) - 1][minx].Text;
+            }
+            else throw new Exception("#Hibás tartományhivatkozás");
         }
         private string LeftOrRight(bool left = true) { // "
             if(left) {
