@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.Serialization.Formatters;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,19 +16,32 @@ using System.Windows.Shapes;
 
 namespace ExcelProject
 {
-	/// <summary>
-	/// Interaction logic for MainWindow.xaml
-	/// </summary>
-	public partial class MainWindow : Window, INotifyPropertyChanged
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
-		public event PropertyChangedEventHandler? PropertyChanged;
-        public string SaveFormat { get; set; }
-		public ObservableCollection<ObservableCollection<CellPropertiesModel>> cellPropertiesModels {
-            get { return Statics.CellPropertiesModels; } 
+        public event PropertyChangedEventHandler? PropertyChanged;
+        public string SaveFormat { get; set; } = Statics.saveFormats[0];
+        public ObservableCollection<ObservableCollection<CellPropertiesModel>> cellPropertiesModels {
+            get { return Statics.CellPropertiesModels; }
             set { Statics.CellPropertiesModels = value;
                 OnPropertyChanged(nameof(cellPropertiesModels));
-            } 
-        } 
+            }
+        }
+        private bool isCopying = false;
+        public bool IsStriped 
+        {
+            get
+            {
+                return isStriped;
+            }
+            set
+            {
+                isStriped = value;OnPropertyChanged(nameof(IsStriped));
+            }
+        }
+        private bool isStriped { get; set; } = false;
         public ObservableCollection<FontFamily> fontFamilies { get; set; } = new ObservableCollection<FontFamily>();
         public ObservableCollection<KeyValuePair<string, TextDecorationCollection?>> textDecorations { get; set; } = Statics.textDecorations;
         public ObservableCollection<string> saveFormats { get; set; } = Statics.saveFormats;
@@ -161,34 +175,10 @@ namespace ExcelProject
 			Grid.SetColumn(btn, j);
 			Grid.SetRow(btn, i);
             btn.Content = content;
-			btn.Click += Header_BTN_Click;
 			btn.Tag = $"{i};{j}";
             btn.HorizontalContentAlignment = HorizontalAlignment.Center;
             btn.VerticalContentAlignment = VerticalAlignment.Center;
 			table_GRD.Children.Add(btn);
-		}
-
-		private void Header_BTN_Click(object sender, RoutedEventArgs e)
-		{
-            if (sender.GetType() != typeof(Button)) return;
-            Button btn = (Button)sender;
-            int x = int.Parse(btn.Tag.ToString().Split(';')[0]);
-            int y = int.Parse(btn.Tag.ToString().Split(';')[1]);
-            if (x == 0 && y == 0) selectAll();
-            else if(x == 0) selectCol(y);
-            else selectRow(x);
-		}
-        private void selectRow(int y)
-        {
-            Debug.WriteLine($"Selectrow {y}");
-        }
-        private void selectCol(int x)
-        {
-			Debug.WriteLine($"Selectcol {x}");
-		}
-		private void selectAll()
-        {
-			Debug.WriteLine($"SelectAll");
 		}
 		//private void Tbx_LostFocus(object sender, RoutedEventArgs e)
   //      {
@@ -206,10 +196,16 @@ namespace ExcelProject
             int j = int.Parse(tbx.Tag.ToString().Split(';')[1]);
             if(SelectedCellProperties != null)
             { 
+                if(isCopying) cellPropertiesModels[i][j].CopyProps(SelectedCellProperties);
+                if (isCopying)
+                {
+                    table_GRD.ColumnDefinitions[j].Width = table_GRD.ColumnDefinitions[SelectedCellProperties.X].Width;
+                    table_GRD.RowDefinitions[i].Height = table_GRD.RowDefinitions[SelectedCellProperties.Y].Height;
+                }
+                isCopying = false;
                 SelectedCellProperties.Border_Thickness = new Thickness(1);
                 SelectedCellProperties.Border_Color = Brushes.Black;
             }
-
 			SelectedCellProperties = cellPropertiesModels[i][j];
             SelectedCellProperties.Border_Color = Brushes.CornflowerBlue;
         }
@@ -299,9 +295,45 @@ namespace ExcelProject
                 loader.Save(SaveFormat);
             }
 		}
+        private void formatcopy_Click(object sender, RoutedEventArgs e)
+        {
+            isCopying = true;
+        }
 
-        private void clearCellBtn_Click(object sender, RoutedEventArgs e) {
-            selectedCellProperties.Text = "";
+        private void tablestriped_Click(object sender, RoutedEventArgs e)
+        {
+            for (int i = 2; i < cellPropertiesModels.Count; i+=2)
+            {
+                foreach (CellPropertiesModel cell in cellPropertiesModels[i])
+                {
+                    darkenCellPropertyBG(cellPropertiesModels[i-1][0], cell);
+                }
+            }
+            IsStriped = !IsStriped;
+        }
+        private Color darkenColor(Color color, double factor = 0.9)
+        {
+            return Color.FromArgb(
+                color.A,
+                (byte)(color.R * factor),
+                (byte)(color.G * factor),
+                (byte)(color.B * factor));
+        }
+        private void darkenCellPropertyBG(CellPropertiesModel baseProperties, CellPropertiesModel cellPropertiesModel)
+        {
+            if (baseProperties.Background_Color is SolidColorBrush brush)
+            {
+                if (!isStriped) 
+                {
+                    Color originalColor = brush.Color;
+                    Color darkerColor = darkenColor(originalColor, 0.85); // 90% brightness
+                    cellPropertiesModel.Background_Color = new SolidColorBrush(darkerColor);
+                }
+                else
+                {
+                    cellPropertiesModel.Background_Color = brush;
+                }
+            }
         }
     }
 }

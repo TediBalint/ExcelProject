@@ -44,14 +44,19 @@ namespace ExcelProject
 			new KeyValuePair<string, TextDecorationCollection?>("Vékony", TextDecorations.Baseline),
 			new KeyValuePair<string, TextDecorationCollection?>("Fölé", TextDecorations.OverLine),
 			new KeyValuePair<string, TextDecorationCollection?>("Áthúzás", TextDecorations.Strikethrough)
-		};
+        };
 		public static ObservableCollection<KeyValuePair<string, Brush>> foregroundBrushes = new ObservableCollection<KeyValuePair<string, Brush>>()
 		{
 			new KeyValuePair<string, Brush>("Fekete" ,Brushes.Black),
 			new KeyValuePair<string, Brush>("Fehér" ,Brushes.White),
 			new KeyValuePair<string, Brush>("Piros" ,Brushes.Red),
-			new KeyValuePair<string, Brush>("Kék" ,Brushes.Blue)
-		};
+			new KeyValuePair<string, Brush>("Kék" ,Brushes.Blue),
+			new KeyValuePair<string, Brush>("Zöld" ,Brushes.Green),
+			new KeyValuePair<string, Brush>("Barna" ,Brushes.Brown),
+			new KeyValuePair<string, Brush>("Narancs" ,Brushes.Orange),
+			new KeyValuePair<string, Brush>("Szürke" ,Brushes.DarkGray),
+			new KeyValuePair<string, Brush>("Arany" ,Brushes.Gold),
+        };
 		public static ObservableCollection<GridUnitType> gridUnitTypes = new ObservableCollection<GridUnitType>() { GridUnitType.Star, GridUnitType.Pixel, };
 		public static ObservableCollection<string> saveFormats = new ObservableCollection<string>()
 		{
@@ -62,7 +67,7 @@ namespace ExcelProject
 		public static Regex CellCoordRegex = new(@"^[A-Z]+\d+$");
 		public static Regex CellTerritoryRegex = new(@"^[A-Z]+\d+:[A-Z]+\d+$");
 		public static Regex CriteriaRegex = new(@"^(>|<|<>|!=|<=|>=)?\d+$");
-        public static ObservableCollection<ObservableCollection<CellPropertiesModel>> CellPropertiesModels = new();
+		public static ObservableCollection<ObservableCollection<CellPropertiesModel>> CellPropertiesModels = new();
     }
 
 		

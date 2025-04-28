@@ -93,7 +93,7 @@ namespace ExcelProject
             {
                 X = x;
                 Y = y;
-                Text = "";
+                Text = "Default";
                 Font_Size = 16;              
                 Font_Family = new FontFamily("Arial");
                 Font_Weight = FontWeights.Normal;
@@ -110,6 +110,20 @@ namespace ExcelProject
         public CellPropertiesModel()
         {
             
+        }
+        public void CopyProps(CellPropertiesModel model)
+        {
+            Font_Size = model.Font_Size;
+            Font_Family = model.Font_Family;
+            Font_Weight = model.Font_Weight;
+            Font_Style = model.Font_Style;
+            Text_Decoration = model.Text_Decoration;
+            Foreground_Color = model.Foreground_Color;
+            Background_Color = model.Background_Color;
+            Vertical_Content_Align = model.Vertical_Content_Align;
+            Horizontal_Content_Align = model.Horizontal_Content_Align;
+            Border_Thickness = model.Border_Thickness;
+            Border_Color = Brushes.Black;
         }
         public CellPropertiesModel GetClone()
         {

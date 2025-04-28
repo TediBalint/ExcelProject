@@ -54,7 +54,7 @@
                     </Grid>
                 </Border>
                 <Border Style="{StaticResource side_BRD}" Grid.Row="2" Grid.Column="0">
-                    <Button Margin="10" Content="Formátummásoló" x:Name="formatcopy"/>
+                    <Button Margin="10" Content="Formátummásoló" x:Name="formatcopy" Click="formatcopy_Click"/>
                 </Border>
                 <Border Style="{StaticResource side_BRD}" Grid.Row="0" Grid.Column="1">
                     <Grid Margin="10">
@@ -232,10 +232,10 @@
                         <Button Grid.Row="0" Grid.Column="1" Click="StyleBTN_Click" Content="Jó" Margin="10" Background="LightGreen" Foreground="Green"/>
                         <Button Grid.Row="0" Grid.Column="2" Click="StyleBTN_Click" Content="Rossz" Margin="10" Background="Pink" Foreground="Red"/>
                         <Button Grid.Row="0" Grid.Column="3" Click="StyleBTN_Click" Content="Semleges" Margin="10" Background="Gold" Foreground="Brown"/>
-                        <Button Grid.Row="1" Grid.Column="0" Click="StyleBTN_Click" Content="Bevitel" Margin="10" Background="Orange"/>
+                        <Button Grid.Row="1" Grid.Column="0" Click="StyleBTN_Click" Content="Bevitel" Margin="10" Background="Orange" Foreground="Black"/>
                         <Button Grid.Row="1" Grid.Column="1" Click="StyleBTN_Click" Content="Ellenőrzőcella" Margin="10" Background="DarkGray" Foreground="White"/>
                         <Button Grid.Row="1" Grid.Column="2" Click="StyleBTN_Click" Content="Figyelmeztet" Margin="10" Background="White" Foreground="Red"/>
-                        <Button Grid.Row="1" Grid.Column="3" Click="StyleBTN_Click" Content="Hivatkozás" Margin="10" Background="White" Foreground="SandyBrown"/>
+                        <Button Grid.Row="1" Grid.Column="3" Click="StyleBTN_Click" Content="Hivatkozás" Margin="10" Background="White" Foreground="Brown"/>
                     </Grid>
                 </Border>
                 <Border Style="{StaticResource side_BRD}" Grid.Row="2" Grid.Column="3" Grid.RowSpan="2">
@@ -244,7 +244,18 @@
 
                 <ComboBox x:Name="functions" Grid.Column="4" Grid.Row="0" Margin="11"/>
                 <StackPanel Orientation="Horizontal"  Grid.Column="4" Grid.Row="1">
-                    <Button x:Name="tablestriped" Margin="10" Content="Table Striped" Padding="5"/>
+                    <Button x:Name="tablestriped" Margin="10" Content="Table Striped" Padding="5" Click="tablestriped_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="LightGray"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsStriped, Mode=OneWay}" Value="true">
+                                        <Setter Property="Background" Value="Gray"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
                     <Button x:Name="cellEdit" Grid.Column="4" Grid.Row="1" Margin="10" Content="Cella Formázása" Padding="5" Click="cellEdit_Click"/>
                 </StackPanel>
                 <Label Grid.Column="4" Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Center" Content="Függvények" Margin="0 0 0 5"/>
@@ -267,7 +278,7 @@
                             <Setter Property="Height" Value="60"/>
                         </Style>
                     </StackPanel.Resources>
-                    <Button Content="X" x:Name="clearCellBtn" Click="clearCellBtn_Click">
+                    <Button Content="X">
                         <Button.Style>
                             <Style TargetType="Button"  BasedOn="{StaticResource FN_BTN}">
                                 <Style.Triggers>

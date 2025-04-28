@@ -33,7 +33,6 @@ namespace ExcelProject
                 WidthType = width.GridUnitType,
                 HeightType = height.GridUnitType
             };
-            
         }
 
         private void Ok_BTN_Click(object sender, RoutedEventArgs e)

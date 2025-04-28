@@ -11,12 +11,12 @@
   },
   {
     "Name": "SZUMHA",
-    "Values": [ "Összeg_Tartomány", "Tartomány", "Kritérium" ],
+    "Values": [ "*Szám", "Tartomány", "Kritérium" ],
     "Description": "Adott cellatartomány értékeit adja össze egy kritérium alapján"
   },
   {
     "Name": "ÁTLAGHA",
-    "Values": [ "Átlag_Tartomány", "Tartomány", "Kritérium" ],
+    "Values": [ "*Szám", "Tartomány", "Kritérium" ],
     "Description": "Adott cellatartomány értékeit átlagolja egy kritérium alapján"
   },
   {
