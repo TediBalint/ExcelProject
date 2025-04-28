@@ -76,14 +76,15 @@ namespace ExcelProject
                 int x = int.Parse(cell_data[0]);
                 int y = int.Parse(cell_data[1]);
                 Statics.CellPropertiesModels[y][x].Text = cell_data[2];
-				Statics.CellPropertiesModels[y][x].Font_Family = new FontFamily(cell_data[3]);
-				Statics.CellPropertiesModels[y][x].Font_Size = double.Parse(cell_data[4]);
+                Statics.CellPropertiesModels[y][x].Raw = cell_data[3];
+				Statics.CellPropertiesModels[y][x].Font_Family = new FontFamily(cell_data[4]);
+				Statics.CellPropertiesModels[y][x].Font_Size = double.Parse(cell_data[5]);
 				Statics.CellPropertiesModels[y][x].Font_Style = FontStyles.Italic;
-                if(cell_data[5] == "Normal") Statics.CellPropertiesModels[y][x].Font_Style = FontStyles.Normal;
-				Statics.CellPropertiesModels[y][x].Text_Decoration = Statics.textDecorations.FirstOrDefault(x => x.Key == cell_data[6], Statics.textDecorations.First()).Value;
-				if (Enum.TryParse(cell_data[7], out VerticalAlignment vertical_alignment)) Statics.CellPropertiesModels[y][x].Vertical_Content_Align = vertical_alignment;
-				if (Enum.TryParse(cell_data[8], out HorizontalAlignment horizontal_alignment)) Statics.CellPropertiesModels[y][x].Horizontal_Content_Align = horizontal_alignment;
-				Statics.CellPropertiesModels[y][x].Background_Color = (SolidColorBrush)new BrushConverter().ConvertFromString(cell_data[9]);
+                if(cell_data[6] == "Normal") Statics.CellPropertiesModels[y][x].Font_Style = FontStyles.Normal;
+				Statics.CellPropertiesModels[y][x].Text_Decoration = Statics.textDecorations.FirstOrDefault(x => x.Key == cell_data[7], Statics.textDecorations.First()).Value;
+				if (Enum.TryParse(cell_data[8], out VerticalAlignment vertical_alignment)) Statics.CellPropertiesModels[y][x].Vertical_Content_Align = vertical_alignment;
+				if (Enum.TryParse(cell_data[9], out HorizontalAlignment horizontal_alignment)) Statics.CellPropertiesModels[y][x].Horizontal_Content_Align = horizontal_alignment;
+				Statics.CellPropertiesModels[y][x].Background_Color = (SolidColorBrush)new BrushConverter().ConvertFromString(cell_data[10]);
 			}
 		}
         public void Save(string format, string path, ColumnDefinitionCollection columnDefinitions, RowDefinitionCollection rowDefinitions)

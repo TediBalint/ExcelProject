@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ExcelProject"
         mc:Ignorable="d"
-        Title="MainWindow" Height="1080" Width="1920" WindowState="Maximized"
+        Title="Excel" Height="1080" Width="1920" WindowState="Maximized"
         FontSize="18">
     <Grid Margin="0 5">
         <Grid.Resources>
@@ -54,7 +54,10 @@
                     </Grid>
                 </Border>
                 <Border Style="{StaticResource side_BRD}" Grid.Row="2" Grid.Column="0">
-                    <Button Margin="10" Content="Formátummásoló" x:Name="formatcopy" Click="formatcopy_Click"/>
+                    <StackPanel Orientation="Horizontal" Margin="10">
+                        <Label Content="Fájlnév" Margin="0 0 5 0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                        <TextBox Text="{Binding FileName}" HorizontalAlignment="Left" VerticalAlignment="Center" Width="200" Padding="0 2" VerticalContentAlignment="Center" />
+                    </StackPanel>
                 </Border>
                 <Border Style="{StaticResource side_BRD}" Grid.Row="0" Grid.Column="1">
                     <Grid Margin="10">
@@ -242,7 +245,7 @@
                     <Label Content="Stílusok" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0 0 0 5"/>
                 </Border>
 
-                <ComboBox x:Name="functions" Grid.Column="4" Grid.Row="0" Margin="11"/>
+                <Button Grid.Column="4" Grid.Row="0" Margin="11" Content="Formátummásoló" x:Name="formatcopy" Click="formatcopy_Click"/>
                 <StackPanel Orientation="Horizontal"  Grid.Column="4" Grid.Row="1">
                     <Button x:Name="tablestriped" Margin="10" Content="Table Striped" Padding="5" Click="tablestriped_Click">
                         <Button.Style>
@@ -304,7 +307,7 @@
                 </StackPanel>
             </Border>
             <Border BorderBrush="Gray" BorderThickness="1">
-                <TextBox IsEnabled="{Binding FnButtonEnabled}" VerticalContentAlignment="Center" VerticalAlignment="Stretch" Width="1760" FontSize="24" Text="{Binding SelectedCellProperties.Text, UpdateSourceTrigger=PropertyChanged}" x:Name="CellContentEditor"/>
+                <TextBox IsEnabled="{Binding FnButtonEnabled}" VerticalContentAlignment="Center" VerticalAlignment="Stretch" Width="1760" FontSize="24" Text="{Binding SelectedCellProperties.Raw, UpdateSourceTrigger=PropertyChanged}" x:Name="CellContentEditor"/>
             </Border>
             <!--függvényillesztő-->
         </StackPanel>

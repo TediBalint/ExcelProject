@@ -39,8 +39,6 @@ namespace ExcelProject
             FuncsToShow = AllFunctions;
             SelectedCellProperties = _selected;
             DataContext = this;
-            //Function f = Function.Compile("=SZUM(SZUM(1;1);2;1+1)"); // \" a parameterben? - todo
-            //string s = f.Invoke();
         }
         private void cancel_Click(object sender, RoutedEventArgs e)
         {
@@ -55,15 +53,16 @@ namespace ExcelProject
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(tulajdonsagNev));
         }
         private void ok_Click(object sender, RoutedEventArgs e) {
-            //DialogResult = true;
             Hide();
             FunctionEditor fe = new FunctionEditor(SelectedFunction);
             fe.ShowDialog();
             if (fe.DialogResult == true) {
                 try {
                     SelectedCellProperties.Text = fe.SelectedFunction.Invoke();
+                    SelectedCellProperties.Raw = fe.SelectedFunction.raw;
                 }
                 catch (Exception err) {
+                    SelectedCellProperties.Raw = fe.SelectedFunction.raw;
                     if (err.Message[0] == '#') SelectedCellProperties.Text = err.Message;
                     else SelectedCellProperties.Text = "#Hiányzó paraméter";
                 }

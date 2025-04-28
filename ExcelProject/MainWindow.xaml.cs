@@ -22,6 +22,12 @@ namespace ExcelProject
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
+        private string fileName;
+        public string FileName
+        {
+            get { return fileName; }
+            set { fileName = value; OnPropertyChanged(nameof(FileName)); }
+        }
         public string SaveFormat { get; set; } = Statics.saveFormats[0];
         public ObservableCollection<ObservableCollection<CellPropertiesModel>> cellPropertiesModels {
             get { return Statics.CellPropertiesModels; }
@@ -54,7 +60,7 @@ namespace ExcelProject
             get {return selectedCellProperties;}
             set { selectedCellProperties = value; 
                   OnPropertyChanged(nameof(SelectedCellProperties));
-                  FnButtonEnabled = SelectedCellProperties != null; // ha null gomb disabled legyen; lostfocus esemeny...
+                  FnButtonEnabled = SelectedCellProperties != null;
                   OnPropertyChanged(nameof(FnButtonEnabled));
             }
         }
@@ -65,8 +71,8 @@ namespace ExcelProject
             DataContext = this;
             init();
             loader = new TableLoader();
+            CellContentEditor.KeyUp += CellEditorKeypress;
         }
-        //CellContentEditor (meg minden textboxnak?) - nak enter esemeny - ott is compile
         private void init()
         {
 			readFontFamilies();
@@ -151,7 +157,7 @@ namespace ExcelProject
 			}
             tbx.Tag = $"{i};{j}";
 			tbx.GotFocus += Tbx_GotFocus;
-			tbx.KeyDown += Tbx_Keypress;
+			tbx.KeyUp += Tbx_Keypress;
             //tbx.LostFocus += Tbx_LostFocus;
             tbx.Text = string.Empty;
             tbx.Cursor = Cursors.Cross;
@@ -187,15 +193,18 @@ namespace ExcelProject
         //          tbx.BorderThickness = new Thickness(1);
         //      }
         private void Tbx_Keypress(object sender, KeyEventArgs e) {
+            TextBox tbx = (TextBox)sender;
             if (e.Key == Key.Enter || e.Key == Key.Tab) {
-                TextBox tbx = (TextBox)sender;
                 try {
                     tbx.Text = Function.Compile(tbx.Text).Invoke();
                 }
                 catch { }
             }
+            else {
+                SelectedCellProperties.Raw = tbx.Text; // needs test
+            }
         }
-		private void Tbx_GotFocus(object sender, RoutedEventArgs e)
+        private void Tbx_GotFocus(object sender, RoutedEventArgs e)
 		{
 			if (sender.GetType() != typeof(TextBox)) return;
 			TextBox tbx = (TextBox)sender;
@@ -216,8 +225,18 @@ namespace ExcelProject
             }
 			SelectedCellProperties = cellPropertiesModels[i][j];
             SelectedCellProperties.Border_Color = Brushes.CornflowerBlue;
+            if (SelectedCellProperties.Raw == "") SelectedCellProperties.Raw = SelectedCellProperties.Text;
         }
-		private void bindPropoerty(TextBox tbx, KeyValuePair<DependencyProperty, string> prop, int i, int j)
+        private void CellEditorKeypress(object sender, KeyEventArgs e) {
+            try {
+                if(SelectedCellProperties.Raw != null) 
+                SelectedCellProperties.Text = Function.Compile(SelectedCellProperties.Raw).Invoke();
+            }
+            catch {
+                SelectedCellProperties.Text = SelectedCellProperties.Raw;
+            }
+        }
+        private void bindPropoerty(TextBox tbx, KeyValuePair<DependencyProperty, string> prop, int i, int j)
         {
 			Binding binding = new Binding(prop.Value)
 			{
@@ -303,7 +322,8 @@ namespace ExcelProject
             {
                 OpenFolderDialog folderDialog = new OpenFolderDialog();
                 if (!folderDialog.ShowDialog().Value) return;
-                loader.Save(SaveFormat, Path.Combine(folderDialog.FolderName, "filename"), table_GRD.ColumnDefinitions, table_GRD.RowDefinitions);
+                loader.Save(SaveFormat, Path.Combine(folderDialog.FolderName, FileName), table_GRD.ColumnDefinitions, table_GRD.RowDefinitions);
+                Title = FileName;
             }
 		}
         private void formatcopy_Click(object sender, RoutedEventArgs e)
@@ -352,6 +372,9 @@ namespace ExcelProject
             OpenFileDialog ofd = new OpenFileDialog();
             if (!ofd.ShowDialog().Value) return;
             loader.Load(ofd.FileName, table_GRD);
+            string filename = ofd.FileName.Split('.').SkipLast(1).LastOrDefault("Excel").Split('\\').LastOrDefault("Excel");
+            Title = filename;
+            FileName = filename;
 		}
 	}
 }

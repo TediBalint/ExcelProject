@@ -21,6 +21,11 @@ namespace ExcelProject
             get { return text; } 
             set { text = value; OnPropertyChanged(nameof(Text));}
         }
+        private string raw;
+        public string Raw {
+            get { return raw; }
+            set { raw = value; OnPropertyChanged(nameof(Raw)); }
+        }
         private FontFamily font_Family;
         public FontFamily Font_Family 
         { 
@@ -135,7 +140,7 @@ namespace ExcelProject
 		}
 		public override string ToString()
 		{
-			return $"{X}:{Y}:{Text}:{Font_Family}:{Font_Size}:{Font_Style}:" +
+			return $"{X}:{Y}:{Text}:{Raw}:{Font_Family}:{Font_Size}:{Font_Style}:" +
                 $"{Statics.textDecorations.FirstOrDefault(x => x.Value == Text_Decoration, Statics.textDecorations.First()).Key}" +
                 $":{Vertical_Content_Align}:{Horizontal_Content_Align}:" +
                 $"{Background_Color};";
