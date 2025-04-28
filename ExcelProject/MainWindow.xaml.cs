@@ -64,7 +64,7 @@ namespace ExcelProject
             InitializeComponent();
             DataContext = this;
             init();
-            loader = new TableLoader(cellPropertiesModels);
+            loader = new TableLoader();
         }
         //CellContentEditor (meg minden textboxnak?) - nak enter esemeny - ott is compile
         private void init()
@@ -76,7 +76,6 @@ namespace ExcelProject
 			makeGrid();
 			makeTBXs();
 		}
-        
         private void readFontFamilies()
         {
             using (StreamReader sr = new StreamReader(Statics.FONT_FILE_PATH))
@@ -347,5 +346,12 @@ namespace ExcelProject
                 }
             }
         }
-    }
+
+		private void open_Click(object sender, RoutedEventArgs e)
+		{
+            OpenFileDialog ofd = new OpenFileDialog();
+            if (!ofd.ShowDialog().Value) return;
+            loader.Load(ofd.FileName, table_GRD);
+		}
+	}
 }

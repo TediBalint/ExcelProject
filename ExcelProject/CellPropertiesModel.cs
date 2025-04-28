@@ -135,7 +135,10 @@ namespace ExcelProject
 		}
 		public override string ToString()
 		{
-			return base.ToString();
+			return $"{X}:{Y}:{Text}:{Font_Family}:{Font_Size}:{Font_Style}:" +
+                $"{Statics.textDecorations.FirstOrDefault(x => x.Value == Text_Decoration, Statics.textDecorations.First()).Key}" +
+                $":{Vertical_Content_Align}:{Horizontal_Content_Align}:" +
+                $"{Background_Color};";
 		}
 		public event PropertyChangedEventHandler? PropertyChanged;
 	}

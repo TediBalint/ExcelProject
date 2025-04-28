@@ -41,7 +41,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Border Style="{StaticResource side_BRD}" Grid.Row="0" Grid.Column="0">
-                    <Button Margin="10" Content="Megnyitás" x:Name="open"/>
+                    <Button Margin="10" Content="Megnyitás" x:Name="open" Click="open_Click"/>
                 </Border>
                 <Border Style="{StaticResource side_BRD}" Grid.Row="1" Grid.Column="0">
                     <Grid Margin="10">
