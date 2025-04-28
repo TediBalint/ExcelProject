@@ -166,7 +166,7 @@ namespace ExcelProject
                     }
                     count--;
                 }
-                else sum += double.Parse(param.Value);
+                else sum += double.Parse(param.Value); // evaluate?
                 count++;
             }
             if (sumOnly) return sum;
@@ -303,7 +303,7 @@ namespace ExcelProject
             }
             else throw new Exception("#Hibás tartományhivatkozás");
         }
-        private string LeftOrRight(bool left = true) { // "
+        private string LeftOrRight(bool left = true) { // " (evaluate)
             if(left) {
                 return string.Join(string.Empty, Parameters["Szöveg"].ToList().Take(int.Parse(Parameters["n"])));
             }
@@ -317,7 +317,7 @@ namespace ExcelProject
             table.Rows.Add(row);
             return double.Parse((string)row["expression"]);
         }
-        public static Function Compile(string arg) {
+        public static Function Compile(string arg) { // )
             try {
                 string[] pcs = arg.Split('('); 
                 string _name;

@@ -53,7 +53,6 @@ namespace ExcelProject
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(tulajdonsagNev));
         }
         private void ok_Click(object sender, RoutedEventArgs e) {
-            //DialogResult = true;
             Hide();
             FunctionEditor fe = new FunctionEditor(SelectedFunction);
             fe.ShowDialog();

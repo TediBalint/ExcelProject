@@ -65,7 +65,7 @@ namespace ExcelProject
             DataContext = this;
             init();
             loader = new TableLoader(cellPropertiesModels);
-            CellContentEditor.KeyDown += CellEditorOnEnter;
+            CellContentEditor.KeyUp += CellEditorKeypress;
         }
         private void init()
         {
@@ -222,14 +222,13 @@ namespace ExcelProject
             SelectedCellProperties.Border_Color = Brushes.CornflowerBlue;
             if (SelectedCellProperties.Raw == "") SelectedCellProperties.Raw = SelectedCellProperties.Text;
         }
-        private void CellEditorOnEnter(object sender, KeyEventArgs e) {
-            if (e.Key == Key.Enter || e.Key == Key.Tab) {
-                try {
-                    SelectedCellProperties.Text = Function.Compile(SelectedCellProperties.Raw).Invoke();
-                }
-                catch {
-                    SelectedCellProperties.Text = SelectedCellProperties.Raw;
-                }
+        private void CellEditorKeypress(object sender, KeyEventArgs e) {
+            try {
+                if(SelectedCellProperties.Raw != null) 
+                SelectedCellProperties.Text = Function.Compile(SelectedCellProperties.Raw).Invoke();
+            }
+            catch {
+                SelectedCellProperties.Text = SelectedCellProperties.Raw;
             }
         }
         private void bindPropoerty(TextBox tbx, KeyValuePair<DependencyProperty, string> prop, int i, int j)
