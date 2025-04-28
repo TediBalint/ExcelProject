@@ -152,6 +152,7 @@ namespace ExcelProject
 			}
             tbx.Tag = $"{i};{j}";
 			tbx.GotFocus += Tbx_GotFocus;
+			tbx.KeyDown += Tbx_Keypress;
             //tbx.LostFocus += Tbx_LostFocus;
             tbx.Text = string.Empty;
             tbx.Cursor = Cursors.Cross;
@@ -180,13 +181,21 @@ namespace ExcelProject
             btn.VerticalContentAlignment = VerticalAlignment.Center;
 			table_GRD.Children.Add(btn);
 		}
-		//private void Tbx_LostFocus(object sender, RoutedEventArgs e)
-  //      {
-  //          if (sender.GetType() != typeof(TextBox)) return;
-  //          TextBox tbx = (TextBox)sender;
-  //          tbx.BorderThickness = new Thickness(1);
-  //      }
-        
+        //private void Tbx_LostFocus(object sender, RoutedEventArgs e)
+        //      {
+        //          if (sender.GetType() != typeof(TextBox)) return;
+        //          TextBox tbx = (TextBox)sender;
+        //          tbx.BorderThickness = new Thickness(1);
+        //      }
+        private void Tbx_Keypress(object sender, KeyEventArgs e) {
+            if (e.Key == Key.Enter || e.Key == Key.Tab) {
+                TextBox tbx = (TextBox)sender;
+                try {
+                    tbx.Text = Function.Compile(tbx.Text).Invoke();
+                }
+                catch { }
+            }
+        }
 		private void Tbx_GotFocus(object sender, RoutedEventArgs e)
 		{
 			if (sender.GetType() != typeof(TextBox)) return;
