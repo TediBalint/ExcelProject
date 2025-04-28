@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using Microsoft.Win32;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -12,7 +13,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ExcelProject
 {
@@ -289,10 +289,13 @@ namespace ExcelProject
 
 		private void save_BTN_Click(object sender, RoutedEventArgs e)
 		{
+
             MessageBoxResult result = MessageBox.Show("Biztosan menteni akar? Lehetséges hogy adatok vesznek el.", "Mentés", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
-            if (result == MessageBoxResult.Yes) 
+            if (result == MessageBoxResult.OK) 
             {
-                loader.Save(SaveFormat);
+                OpenFolderDialog folderDialog = new OpenFolderDialog();
+                if (!folderDialog.ShowDialog().Value) return;
+                loader.Save(SaveFormat, Path.Combine(folderDialog.FolderName, "filename"), table_GRD.ColumnDefinitions, table_GRD.RowDefinitions);
             }
 		}
         private void formatcopy_Click(object sender, RoutedEventArgs e)

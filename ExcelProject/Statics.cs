@@ -60,7 +60,7 @@ namespace ExcelProject
 		public static ObservableCollection<GridUnitType> gridUnitTypes = new ObservableCollection<GridUnitType>() { GridUnitType.Star, GridUnitType.Pixel, };
 		public static ObservableCollection<string> saveFormats = new ObservableCollection<string>()
 		{
-			"TXT", "JSON", "CSV"
+			"TXT", "CSV"
 		};
 		public static GridLength DefaultHeight = new GridLength(1, GridUnitType.Star);
 		public static GridLength DefaultWidth = new GridLength(1, GridUnitType.Star);

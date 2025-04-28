@@ -133,7 +133,10 @@ namespace ExcelProject
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 		}
-
-        public event PropertyChangedEventHandler? PropertyChanged;
+		public override string ToString()
+		{
+			return base.ToString();
+		}
+		public event PropertyChangedEventHandler? PropertyChanged;
 	}
 }
