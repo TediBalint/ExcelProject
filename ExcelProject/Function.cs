@@ -203,7 +203,7 @@ namespace ExcelProject
 
                 for (int i = miny; i <= maxy; i++) {
                     for (int j = minx; j <= maxx; j++) {
-                        CriteriaNumber = Statics.CellPropertiesModels[i + Math.Abs(terry - miny)][j + Math.Abs(terrx - minx)].Text;
+                        CriteriaNumber = Statics.CellPropertiesModels[i + (terry - miny)][j + (terrx - minx)].Text;
                         if (FitsCriteria(CriteriaNumber, Parameters["Kritérium"])) {
                             sum += double.Parse(Statics.CellPropertiesModels[i][j].Text);
                             count++;
