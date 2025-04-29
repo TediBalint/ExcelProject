@@ -69,8 +69,8 @@
                         </Grid.ColumnDefinitions>
                         <ComboBox x:Name="fontfamily" Grid.Column="0" ItemsSource="{Binding fontFamilies}" SelectedItem="{Binding SelectedCellProperties.Font_Family}" VerticalContentAlignment="Center"  Margin="0 0 10 0"/>
                         <ComboBox x:Name="fontsize" Grid.Column="1"  Margin="0 0 10 0" ItemsSource="{Binding fontSizes}" SelectedValue="{Binding SelectedCellProperties.Font_Size}" VerticalContentAlignment="Center"/>
-                        <Button x:Name="size_plus" Grid.Column="1" Content="A+"  Margin="0,5,3,5" Grid.ColumnSpan="2" HorizontalAlignment="Right" Width="35" Click="size_plus_Click"/>
-                        <Button x:Name="size_minus" Grid.Column="3" Content="A-" Margin="0 5 3 5" Click="size_minus_Click"/>
+                        <Button x:Name="size_plus" Grid.Column="1" Content="A+"  Margin="0 0 5 0" Grid.ColumnSpan="2" HorizontalAlignment="Right" Width="40" Click="size_plus_Click" VerticalAlignment="Center"/>
+                        <Button x:Name="size_minus" Grid.Column="3" Content="A-" Margin="0 0 5 0" Click="size_minus_Click" VerticalAlignment="Center"/>
                     </Grid>
                 </Border>
                 <Border Style="{StaticResource side_BRD}" Grid.Row="1" Grid.Column="1">

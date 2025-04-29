@@ -116,8 +116,15 @@ namespace ExcelProject
                 "HOL.VAN" => WhereIs().ToString(),
                 "BAL" => LeftOrRight(),
                 "JOBB" => LeftOrRight(false),
-                _ => Name[0] == '=' ? Evaluate(RemoveFirstChar(Name)).ToString() : Name
+                _ => Name[0] == '=' ? InvokeDefaultCase(Name) : Name
             };
+        }
+        private string InvokeDefaultCase(string Name) {
+            if (Statics.CellCoordRegex.Match(RemoveFirstChar(Name)).Success) {
+                (int x, int y) = getCoordsFromText(RemoveFirstChar(Name));
+                return Statics.CellPropertiesModels[y][x].Text;
+            }
+            return Evaluate(RemoveFirstChar(Name)).ToString();
         }
         private (int, int) getCoordsFromText(string text) {
             int x = TranslateLettersToIdx(new Regex(@"^[A-Z]+").Match(text).ToString());
@@ -265,7 +272,8 @@ namespace ExcelProject
                     if ((maxy - miny) < 0 || (maxx - minx) < 0) throw new Exception("#Hibás tartomány");
                     for (int i = miny; i <= maxy; i++) {
                         for (int j = minx; j <= maxx; j++) {
-                            nums.Add(double.Parse(Statics.CellPropertiesModels[i][j].Text));
+                            try { nums.Add(double.Parse(Statics.CellPropertiesModels[i][j].Text)); }
+                            catch { }
                         }
                     }
                 }
@@ -304,8 +312,14 @@ namespace ExcelProject
                 bool isColumn = maxx - minx == 0;
                 bool isRow = maxy - miny == 0;
                 if (!isColumn && !isRow) throw new Exception("#Tartomány csak egy sor vagy egy oszlop lehet");
-                if (isRow) return Statics.CellPropertiesModels[miny][minx + int.Parse(Parameters["Index"]) - 1].Text;
-                return Statics.CellPropertiesModels[miny + int.Parse(Parameters["Index"]) - 1][minx].Text;
+                int idx;
+                if (Statics.CellCoordRegex.Match(Parameters["Index"]).Success) {
+                    (int x, int y) = getCoordsFromText(Parameters["Index"]);
+                    idx = int.Parse(Statics.CellPropertiesModels[y][x].Text);
+                }
+                else idx = int.Parse(Parameters["Index"]);
+                if (isRow) return Statics.CellPropertiesModels[miny][minx + idx - 1].Text;
+                return Statics.CellPropertiesModels[miny + idx - 1][minx].Text;
             }
             else throw new Exception("#Hibás tartományhivatkozás");
         }
