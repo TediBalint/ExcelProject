@@ -227,8 +227,11 @@ namespace ExcelProject
         }
         private void CellEditorKeypress(object sender, KeyEventArgs e) {
             try {
-                if(SelectedCellProperties.Raw != null && SelectedCellProperties.Raw[0] == '=') 
-                SelectedCellProperties.Text = Function.Compile(SelectedCellProperties.Raw).Invoke();
+                if (SelectedCellProperties.Raw != null) {
+                    if (SelectedCellProperties.Raw[0] == '=')
+                        SelectedCellProperties.Text = Function.Compile(SelectedCellProperties.Raw).Invoke();
+                    else SelectedCellProperties.Text = SelectedCellProperties.Raw;
+                }                
             }
             catch {
                 SelectedCellProperties.Text = SelectedCellProperties.Raw;
