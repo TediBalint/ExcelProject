@@ -28,15 +28,12 @@ namespace ExcelProject
             {
                 string? data = sr.ReadLine();
                 if (data == null) return;
-				Debug.WriteLine("Reading col info");
 				readColInfo(data, grd);
 				data = sr.ReadLine();
                 if (data == null) throw new FileFormatException("Wrong file save format");
-                Debug.WriteLine("Reading row info");
 				readRowInfo(data, grd);
                 data = sr.ReadLine();
 				if (data == null) throw new FileFormatException("Wrong file save format");
-                Debug.WriteLine("Reading cell info");
                 readCellInfo(data);
 				
 			}
@@ -89,7 +86,6 @@ namespace ExcelProject
 		}
         public void Save(string format, string path, ColumnDefinitionCollection columnDefinitions, RowDefinitionCollection rowDefinitions)
         {
-            Debug.WriteLine($"{path}.{format.ToLower()}");
 			using (StreamWriter sw = new StreamWriter($"{path}.{format.ToLower()}"))
             {
                 foreach (ColumnDefinition column in columnDefinitions)

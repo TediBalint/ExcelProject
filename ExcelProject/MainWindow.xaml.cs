@@ -26,9 +26,9 @@ namespace ExcelProject
         public string FileName
         {
             get { return fileName; }
-            set { fileName = value; OnPropertyChanged(nameof(FileName)); }
+            set { fileName = value; OnPropertyChanged(nameof(FileName)); } 
         }
-        public string SaveFormat { get; set; } = Statics.saveFormats[0];
+		public string SaveFormat { get; set; } = Statics.saveFormats[0];
         public ObservableCollection<ObservableCollection<CellPropertiesModel>> cellPropertiesModels {
             get { return Statics.CellPropertiesModels; }
             set { Statics.CellPropertiesModels = value;
@@ -81,6 +81,7 @@ namespace ExcelProject
             makeBTNs();
 			makeGrid();
 			makeTBXs();
+            FileName = "Excel";
 		}
         private void readFontFamilies()
         {
