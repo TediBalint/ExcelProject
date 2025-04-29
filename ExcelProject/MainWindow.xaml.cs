@@ -107,11 +107,6 @@ namespace ExcelProject
                 }
             }
         }
-		private void next_Click(object sender, RoutedEventArgs e)
-        {
-            FunctionSelector fs = new FunctionSelector(SelectedCellProperties);
-            fs.ShowDialog();
-        }
         private void makeList(int side_length)
         {
 			for (int i = 0; i < side_length; i++) 
@@ -162,7 +157,8 @@ namespace ExcelProject
             tbx.Text = string.Empty;
             tbx.Cursor = Cursors.Cross;
 			table_GRD.Children.Add(tbx);
-		}
+            tbx.TextWrapping = TextWrapping.Wrap;
+        }
         private void makeBTNs()
         {
             for (int i = 1; i < cellPropertiesModels.Count; i++)
@@ -195,10 +191,12 @@ namespace ExcelProject
         private void Tbx_Keypress(object sender, KeyEventArgs e) {
             TextBox tbx = (TextBox)sender;
             if (e.Key == Key.Enter || e.Key == Key.Tab) {
-                try {
-                    tbx.Text = Function.Compile(tbx.Text).Invoke();
+                if (tbx.Text != "" && tbx.Text[0] == '=') {
+                    try {
+                        tbx.Text = Function.Compile(tbx.Text).Invoke();
+                    }
+                    catch { }
                 }
-                catch { }
             }
             else {
                 SelectedCellProperties.Raw = tbx.Text; // needs test
@@ -229,7 +227,7 @@ namespace ExcelProject
         }
         private void CellEditorKeypress(object sender, KeyEventArgs e) {
             try {
-                if(SelectedCellProperties.Raw != null) 
+                if(SelectedCellProperties.Raw != null && SelectedCellProperties.Raw[0] == '=') 
                 SelectedCellProperties.Text = Function.Compile(SelectedCellProperties.Raw).Invoke();
             }
             catch {
@@ -259,11 +257,14 @@ namespace ExcelProject
 		}
 		private void insertFuncBtn_Click(object sender, RoutedEventArgs e)
 		{
-            Window functionselectorWindw = new FunctionSelector(SelectedCellProperties);
-            functionselectorWindw.ShowDialog();
+            Window functionselectorWindow = new FunctionSelector(SelectedCellProperties);
+            functionselectorWindow.ShowDialog();
 		}
-
-		private void size_plus_Click(object sender, RoutedEventArgs e)
+        private void clearCellBtn_Click(object sender, RoutedEventArgs e) {
+            selectedCellProperties.Text = "";
+            selectedCellProperties.Raw = "";
+        }
+        private void size_plus_Click(object sender, RoutedEventArgs e)
 		{
             if (SelectedCellProperties == null) return;
             int idx = fontSizes.IndexOf(SelectedCellProperties.Font_Size) + 1;
@@ -317,7 +318,7 @@ namespace ExcelProject
 		private void save_BTN_Click(object sender, RoutedEventArgs e)
 		{
 
-            MessageBoxResult result = MessageBox.Show("Biztosan menteni akar? Lehetséges hogy adatok vesznek el.", "Mentés", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+            MessageBoxResult result = MessageBox.Show("Biztosan menteni akar?", "Mentés", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
             if (result == MessageBoxResult.OK) 
             {
                 OpenFolderDialog folderDialog = new OpenFolderDialog();

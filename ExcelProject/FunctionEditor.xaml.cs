@@ -83,12 +83,18 @@ namespace ExcelProject {
             DialogResult = false;
             Close();
         }
+        private void evaluateBindedParams() {
+            foreach (KeyValuePair<string, string> p in BindedParamVals) {
+                BindedParamVals[p.Key] = Function.evaluateParameter(p.Value);
+            }
+        }
         private void done_Click(object sender, RoutedEventArgs e) {
+            evaluateBindedParams();
             SelectedFunction.Parameters = BindedParamVals;
             foreach(var tb in paramInputs.Children.OfType<TextBox>()) {
-                paramValsInOrder.Add(tb.Text);
+                if (tb.Text != "") paramValsInOrder.Add(tb.Text);
             }
-            SelectedFunction.raw = '=' + SelectedFunction.Name + '(' + string.Join(';', paramValsInOrder.Where(x=>x!=null)) + ')';
+            SelectedFunction.raw = '=' + SelectedFunction.Name + '(' + string.Join(';', paramValsInOrder) + ')';
             DialogResult = true;
             Close();
         }
@@ -96,6 +102,7 @@ namespace ExcelProject {
             if (e.Key == Key.Enter || e.Key == Key.Tab) {
                 try {
                     fnValuePreview.Foreground = Brushes.Black;
+                    evaluateBindedParams();
                     SelectedFunction.Parameters = BindedParamVals;
                     FnPreview = SelectedFunction.Invoke();
                 }

@@ -68,7 +68,7 @@ namespace ExcelProject
                 }
             }
         }
-        private string evaluateParameter(string param) {
+        public static string evaluateParameter(string param) {
             Function f = Compile(param);
             string evaluatedParam;
             try { evaluatedParam = Evaluate(param).ToString(); }
@@ -124,25 +124,37 @@ namespace ExcelProject
             int y = int.Parse(new Regex(@"\d+").Match(text).ToString());
             return (x, y);
         }
-        private bool FitsCriteria(string inp, string crit) {
+        private bool FitsCriteria(string inp, string crit){
+            string critValueAsStr = new Regex(@"(?!>|<|!|=).*$").Match(crit).ToString();
             try {
                 double n;
+                double critValue = 0;
+                if (Statics.CellCoordRegex.Match(critValueAsStr).Success) {
+                    (int x, int y) = getCoordsFromText(critValueAsStr);
+                    critValue = double.Parse(Statics.CellPropertiesModels[y][x].Text);
+                }
+                else critValue = double.Parse(critValueAsStr);
                 n = double.Parse(inp);
                 if (crit[0] == '>') {
-                    if (crit[1] == '=') return n >= int.Parse(RemoveFirstChar(RemoveFirstChar(crit)));
-                    else return n > int.Parse(RemoveFirstChar(crit));
+                    if (crit[1] == '=') return n >= critValue;
+                    else return n > critValue;
                 }
                 if (crit[0] == '<') {
-                    if (crit[1] == '>') return n != int.Parse(RemoveFirstChar(RemoveFirstChar(crit)));
-                    if (crit[1] == '=') return n <= int.Parse(RemoveFirstChar(RemoveFirstChar(crit)));
-                    else return n < int.Parse(RemoveFirstChar(crit));
+                    if (crit[1] == '>') return n != critValue;
+                    if (crit[1] == '=') return n <= critValue;
+                    else return n < critValue;
                 }
-                if (crit[0] == '!') return n != int.Parse(RemoveFirstChar(RemoveFirstChar(crit)));
-                else return n == int.Parse(crit);
+                if (crit[0] == '!') return n != critValue;
+                else return n == critValue;
             }
             catch {
-                if ((crit[0] == '<' && crit[1] == '>') || (crit[0] == '!' && crit[1] == '=')) return inp != crit;
-                return inp == crit; 
+                if (Statics.CellCoordRegex.Match(critValueAsStr).Success) {
+                    (int x, int y) = getCoordsFromText(critValueAsStr);
+                    critValueAsStr = Statics.CellPropertiesModels[y][x].Text;
+                }
+                if ((crit[0] == '<' && crit[1] != '>') || (crit[0] == '!' && crit[1] != '=')) throw new Exception("#Hibás kritérium");
+                if ((crit[0] == '<' && crit[1] == '>') || (crit[0] == '!' && crit[1] == '=')) return inp != critValueAsStr;
+                return inp == critValueAsStr; 
             }
         }
         private double SumOrAvg(bool sumOnly = true) {
@@ -166,7 +178,7 @@ namespace ExcelProject
                     }
                     count--;
                 }
-                else sum += double.Parse(param.Value); // evaluate?
+                else sum += double.Parse(param.Value);
                 count++;
             }
             if (sumOnly) return sum;
@@ -175,8 +187,6 @@ namespace ExcelProject
         private double SumIfOrAvgIf(bool sumOnly = true) {
             double sum = 0;
             int count = 0;
-            int terrIdx = 0;
-            if (!Statics.CriteriaRegex.Match(Parameters["Kritérium"]).Success)  throw new Exception("#Hibás kritérium");
             string sumTerritory;
             try { sumTerritory = Parameters["Összeg_Tartomány"]; }
             catch { sumTerritory = Parameters["Átlag_Tartomány"]; }
@@ -184,24 +194,21 @@ namespace ExcelProject
             if (Statics.CellTerritoryRegex.Match(sumTerritory).Success && Statics.CellTerritoryRegex.Match(Parameters["Tartomány"]).Success) {
                 string[] territoryStartAndEnd = Parameters["Tartomány"].Split(":");
                 (int terrx, int terry) = getCoordsFromText(territoryStartAndEnd[0]);
-                (int _tx, _) = getCoordsFromText(territoryStartAndEnd[1]);
-                bool isColumn = terrx - _tx == 0;
-                //szamossag nem egyezik meg akk throwoljon
+                (int terrendx, int terrendy) = getCoordsFromText(territoryStartAndEnd[1]);
                 string[] startAndEnd = sumTerritory.Split(":");
                 (int minx, int miny) = getCoordsFromText(startAndEnd[0]);
                 (int maxx, int maxy) = getCoordsFromText(startAndEnd[1]);
                 if ((maxy - miny) < 0 || (maxx - minx) < 0) throw new Exception("#Hibás tartomány");
+                if ((terrendx - terrx) * (terrendy - terry) != (maxx - minx) * (maxy - miny)) throw new Exception("#A tartományok számossága nem egyezik");
+
                 for (int i = miny; i <= maxy; i++) {
                     for (int j = minx; j <= maxx; j++) {
-                        if (!isColumn) CriteriaNumber = Statics.CellPropertiesModels[terry][terrx + terrIdx].Text;
-                        else CriteriaNumber = Statics.CellPropertiesModels[terry + terrIdx][terrx].Text;
+                        CriteriaNumber = Statics.CellPropertiesModels[i + Math.Abs(terry - miny)][j + Math.Abs(terrx - minx)].Text;
                         if (FitsCriteria(CriteriaNumber, Parameters["Kritérium"])) {
                             sum += double.Parse(Statics.CellPropertiesModels[i][j].Text);
                             count++;
                         }
-                        if (maxx - minx >= 1) terrIdx++;
                     }
-                    if (maxy - miny >= 1) terrIdx++;
                 }
             }
             else throw new Exception("#Hibás tartományhivatkozás");
@@ -230,7 +237,6 @@ namespace ExcelProject
         }
         private int CountIf() {
             int count = 0;
-            if (!Statics.CriteriaRegex.Match(Parameters["Kritérium"]).Success) throw new Exception("#Hibás kritérium");
             if (Statics.CellTerritoryRegex.Match(Parameters["Tartomány"]).Success) {
                 string[] startAndEnd = Parameters["Tartomány"].Split(":");
                 (int minx, int miny) = getCoordsFromText(startAndEnd[0]);
@@ -303,8 +309,12 @@ namespace ExcelProject
             }
             else throw new Exception("#Hibás tartományhivatkozás");
         }
-        private string LeftOrRight(bool left = true) { // " (evaluate)
-            if(left) {
+        private string LeftOrRight(bool left = true) { 
+            if (Parameters["Szöveg"][0] == '\"' && Parameters["Szöveg"][^1] == '\"') {
+                Parameters["Szöveg"] = RemoveFirstChar(Parameters["Szöveg"]);
+                Parameters["Szöveg"].Remove(Parameters["Szöveg"].Length - 1);
+            }
+            if (left) {
                 return string.Join(string.Empty, Parameters["Szöveg"].ToList().Take(int.Parse(Parameters["n"])));
             }
             return string.Join(string.Empty, Parameters["Szöveg"].ToList().Skip(Parameters["Szöveg"].Length - int.Parse(Parameters["n"])));
@@ -317,14 +327,15 @@ namespace ExcelProject
             table.Rows.Add(row);
             return double.Parse((string)row["expression"]);
         }
-        public static Function Compile(string arg) { // )
+        public static Function Compile(string arg) {
             try {
                 string[] pcs = arg.Split('('); 
                 string _name;
                 if (pcs[0][0] == '=') _name = RemoveFirstChar(pcs[0]);
                 else _name = pcs[0];
                 string _params = string.Join(string.Empty, string.Join('(', pcs.Skip(1)));
-                _params = _params.Remove(_params.Length - 1);
+                if (_params[^1] == ')') _params = _params.Remove(_params.Length - 1);
+                else throw new Exception("invalid parentheses"); // azer meg tesztelem
                 Function f = new Function(_name, _params);
                 f.raw = arg;
                 return f;
