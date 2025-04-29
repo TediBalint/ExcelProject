@@ -46,13 +46,8 @@ namespace ExcelProject
             if (ParameterNames[0].StartsWith("*")) {
                 int minus = ParameterNames.Length - 1;
                 for (int i = 0; i < paramVals.Count - minus; i++) {
-                    try {
-                        string evaluatedParam = evaluateParameter(paramVals[i]);
-                        Parameters.Add($"{ParameterNames[0].Replace("*", "")}{i + 1}", evaluatedParam);
-                    }
-                    catch {
-                        throw new Exception("A paraméterek száma nem elegendő");
-                    }
+                    string evaluatedParam = evaluateParameter(paramVals[i]);
+                    Parameters.Add($"{ParameterNames[0].Replace("*", "")}{i + 1}", evaluatedParam);
                 }
                 for (int i = 0; i < minus; i++) {
                     Parameters.Add(ParameterNames[i + 1], paramVals[i + paramVals.Count - minus]);
@@ -349,7 +344,7 @@ namespace ExcelProject
                 else _name = pcs[0];
                 string _params = string.Join(string.Empty, string.Join('(', pcs.Skip(1)));
                 if (_params[^1] == ')') _params = _params.Remove(_params.Length - 1);
-                else throw new Exception("invalid parentheses"); // azer meg tesztelem
+                else throw new Exception("invalid parentheses");
                 Function f = new Function(_name, _params);
                 f.raw = arg;
                 return f;
